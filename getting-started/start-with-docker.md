@@ -1,6 +1,6 @@
 # Overview
 
-This tutorial will demonstrate how you can quickly setup gateway services to secure and optimize access to backend services.
+This tutorial series will demonstrate how you can quickly setup gateway services to secure and optimize access to backend services.
 
 As developers, we often spend large amount of time building that innovative digital application. When you need to integrate with backend services, you're met with a list of *enterprise standard* requirements for security, performance, or more. Now, you could open up the text editor and start coding again, but security & performance are not trivial things to solve, especially at enterprise scale. This is where a gateway solution whose primary focus is security and performance will allow you to accelerate the time to market of your digital application.
 
@@ -16,7 +16,7 @@ It's the same if you are starting with a project someone else has started. Just 
 
 We love things that simply work with minimal effort. Deploying your first DataPower Gateway should be a similar experience to driving a brand new car (without the new car smell). The following steps should get you on the highway!
 
-1. Pull down the DataPower docker image from DockerHub. Of course this is optional, Docker is smart enough to get the image when it is run. Still, this might be a good time to familiarize yourself with what the image provides. See the [ibmcom/datapower Docker Hub page for details](https://hub.docker.com/r/ibmcom/datapower/).
+1. Pull down the DataPower docker image from DockerHub. Of course this is optional, Docker is smart enough to get the image when it is run. Still, this might be a good time to familiarize yourself with what the image provides. See the [ibmcom/datapower](https://hub.docker.com/r/ibmcom/datapower/) Docker Hub page for details.
 
     ```
     docker pull ibmcom/datapower:latest
@@ -45,7 +45,7 @@ We love things that simply work with minimal effort. Deploying your first DataPo
     * **Ports:** Specify port numbers to expose on the host system using (_-p nn:nn_) or let Docker choose the ports (_-p nn_). If you're running multiple containers on the same host system, you should let Docker choose the ports for you.
     * **/drouter/config** is the location where DataPower will persist the configuration using an easy to read and editable format.
     * **/drouter/local** is used to store source files such as JavaScript (GatewayScript), XSLT, key, certificates and so on.
-    * **DATAPOWER_INTERACTIVE=true** prompts for login to the DataPower CLI on stdin and must be used with -it. This intermixes log output, disable DATAPOWER_LOG_STDOUT if not desired.
+    * **DATAPOWER_INTERACTIVE=true** prompts for login to the DataPower CLI on stdin and must be used with [-it](https://docs.docker.com/engine/reference/run/#/foreground). This intermixes log and CLI output, to disable log output on stdout use `-e DATAPOWER_LOG_STDOUT=false` if intermixing is not desired.
 
 4. Login to the CLI to complete the initial setup, default username is `admin` and also password is `admin`
 5. Enable the Web GUI - this will be your primary development interface
@@ -54,9 +54,9 @@ We love things that simply work with minimal effort. Deploying your first DataPo
     configure; web-mgmt 0 9090 9090; write memory
     ```
 
-6. Hooray! You have completed the initial setup. Open a Web browser to `https://localhost:9090` and login to the Web GUI using the username `admin` and password `admin`. 
+6. Hooray! You have completed the initial setup. Open a Web browser to `https://localhost:9090` and login to the Web GUI using the username `admin` and password `admin`.
 
-7. Make a note of the directories created when you run the container. These directories are mounted from the container file system, and any edits from your workstation are picked up immediately.
+7. Make a note of the directories created when you run the container. These directories are mounted from the container file system, and any edits from your workstation are picked up when you restart the container.
 ```
 $ ls $PWD
 config	local 
@@ -66,4 +66,4 @@ config	local
 
 In this section, you pulled down the latest DataPower Docker image and started the DataPower container. You performed some basic configuration to enable the Web GUI.
 
-**Next Step**: [Create your First Gateway Service](hello-world-gateway.md)
+**Next Step**: [Experience the CLI and WebUI](experience-cli-webgui.md)
