@@ -2,9 +2,10 @@
 
 DataPower provides a number of configuration management interfaces. Each of these interfaces is fully capable so anything you can do in the Web UI you can do via our Command Line Interface, likewise with the REST API, neat!
 
+Here is a list of the main configuration management interfaces for more information and the complete list click [here](http://www.ibm.com/support/knowledgecenter/SS9H2Y_7.5.0/com.ibm.dp.doc/networkaccess.html)
+
  * Command Line Interface (CLI)
  * Web User Interface (Web UI)
- * SOAP Management Interface (SOMA)
  * REST Management Interface (RMI)
 
 # Command Line Interface 
@@ -16,7 +17,7 @@ The DataPower CLI syntax was designed to human readable and editable. All config
 mkdir cli_datapower_example
 cd cli_datapower_example
 ```
-2. Start the DataPower container mounting volumes relative to the current working directory. Map port 9022 -> 22 for SSH access, which we will enable shortly.
+2. Start the DataPower container mounting volumes relative to the current working directory. Map port 9022 -> 22 for SSH access, port 9090 for the Web UI and 5554 for the REST API, all of which we will enable and use shortly 
 
 ```
 docker run --rm --it \
@@ -26,10 +27,11 @@ docker run --rm --it \
   -e DATAPOWER_INTERACTIVE=true \
   -p 90220:22 \
   -p 9090:9090 \
+  -p 5554:5554 \
   ibmcom/datapower
 ```
 
-3. Login to the CLI, default username is admin and also password is admin. Confirm that both `config:` and `local:` are empty. We’ll do this via the DataPower CLI and the local filesystem.
+3. Login to the CLI, default username is `admin` and also password is `admin`. Confirm that both `config:` and `local:` are empty. We’ll do this via the DataPower CLI and the local filesystem.
 
 ```
 configure terminal
@@ -42,7 +44,7 @@ and
 find .
 ```
 
-4. Now lets enable the SSH service and persist the configuration using the CLI. We use `write memory` to save or persist the configuration, populating `config:` with a file called autoconfig.cfg. 
+4. Now lets enable the SSH service and persist the configuration using the CLI. We use `write memory` to save or persist the configuration, populating `config:` with a file called autoconfig.cfg.
 
 ```
 ssh 0.0.0.0 22
@@ -79,8 +81,14 @@ Now lets do a quick overview of the Web UI. Tasks are grouped via icons in the l
  * __Object__: configure and view objects utilized by your gateway services
 
 
-
-# SOAP Management Interface
-
 # REST Management Interface
 
+Now lets do a quick overview of the REST API, which helps developers achieve a faster workflow through its modern API design and descriptive error messages. This section explains how to use the REST management interface to manage and monitor the configuration. It also describes the functions, structure, and capabilities of the REST management interface. 
+
+1. To get started lets enable the REST interface. We can do this quickly from the CLI using the following commands
+
+```
+rest-mgmt
+admin-state enabled
+exit
+```
