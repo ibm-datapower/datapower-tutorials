@@ -88,7 +88,87 @@ Now lets do a quick overview of the REST API, which helps developers achieve a f
 1. To get started lets enable the REST interface. We can do this quickly from the CLI using the following commands
 
 ```
+top; confg
 rest-mgmt
 admin-state enabled
 exit
 ```
+
+2. We like to use http://httpie.org to interact with a REST API from the command line. To see whats possible issue the following command:
+
+```
+http --verify=no --auth admin:admin https://localhost:5554/mgmt/
+```
+
+which should produce the following JSON output
+```
+{
+    "_links": {
+        "actionqueue": {
+            "href": "/mgmt/actionqueue/"
+        },
+        "config": {
+            "href": "/mgmt/config/"
+        },
+        "domains": {
+            "href": "/mgmt/domains/config/"
+        },
+        "filestore": {
+            "href": "/mgmt/filestore/"
+        },
+        "metadata": {
+            "href": "/mgmt/metadata/"
+        },
+        "self": {
+            "href": "/mgmt/"
+        },
+        "status": {
+            "href": "/mgmt/status/"
+        },
+        "types": {
+            "href": "/mgmt/types/"
+        }
+    }
+}
+```
+
+3. We can use the `config` namespace to query aspects of any configuration object. To complete the URL the application domain must be provided. The following command queries the configuration state of the REST Management Interface in the `default` application domain. To learn more about application domains click [here](http://www.ibm.com/support/knowledgecenter/SS9H2Y_7.5.0/com.ibm.dp.doc/domains.html)
+
+```
+http --verify=no --auth admin:admin https://localhost:5554/mgmt/config/default/RestMgmtInterface
+```
+
+which should produce the following JSON output
+```
+{
+    "RestMgmtInterface": {
+        "ACL": {
+            "href": "/mgmt/config/default/AccessControlList/rest-mgmt",
+            "value": "rest-mgmt"
+        },
+        "LocalAddress": "0.0.0.0",
+        "LocalPort": 5554,
+        "SSLConfigType": "server",
+        "_links": {
+            "doc": {
+                "href": "/mgmt/docs/config/RestMgmtInterface"
+            },
+            "self": {
+                "href": "/mgmt/config/default/RestMgmtInterface/RestMgmt-Settings"
+            }
+        },
+        "mAdminState": "enabled",
+        "name": "RestMgmt-Settings"
+    },
+    "_links": {
+        "doc": {
+            "href": "/mgmt/docs/config/RestMgmtInterface"
+        },
+        "self": {
+            "href": "/mgmt/config/default/RestMgmtInterface"
+        }
+    }
+}
+```
+
+For more information on how to use and explore this feature we recommend the following tutorial series [REST management interface and IBM DataPower Gateway: Part 1: Introduction to the REST management interface and status monitoring](http://www.ibm.com/developerworks/websphere/library/techarticles/1512_derbakova/1512_Derbakova_P1.html)
