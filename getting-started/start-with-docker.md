@@ -1,8 +1,10 @@
-# Overview
+# Getting Started
 
-This tutorial series will demonstrate how you can quickly setup gateway services to secure and optimize access to backend services.
+**Duration**: 7 minutes
 
-As developers, we often spend large amount of time building that innovative digital application. When you need to integrate with backend services, you're met with a list of *enterprise standard* requirements for security, performance, or more. Now, you could open up the text editor and start coding again, but security & performance are not trivial things to solve, especially at enterprise scale. This is where a gateway solution whose primary focus is security and performance will allow you to accelerate the time to market of your digital application.
+This tutorial will demonstrate how you can quickly setup gateway services to secure and optimize access to backend services.
+
+As developers, we spend a large amount of time building that innovative digital application. When your ready to integrate with  backend services, you're often met with a list of *corporate standards* on security and performance. Now, you could open up the text editor and start coding again, but security & performance are not trivial things to solve, especially at scale. This is where a developer-friendly gateway solution whose primary focus is security and performance will allow you to accelerate the time to market of your digital application.
 
 You gotta see it to believe it, right? so let's get started.
 
@@ -38,14 +40,15 @@ We love things that simply work with minimal effort. Deploying your first DataPo
       -e DATAPOWER_INTERACTIVE=true \
       -p 9090:9090 \
       -p 8000-8025:8000-8025 \
+      --name idg \
       ibmcom/datapower
     ```
 
     **Note:** 
-    * **Ports:** Specify port numbers to expose on the host system using (_-p nn:nn_) or let Docker choose the ports (_-p nn_). If you're running multiple containers on the same host system, you should let Docker choose the ports for you.
+    * **Ports:** Expose ports on the host system using (_-p nn:nn_) or let Docker choose the ports (_-p nn_). If you're running multiple containers on the same host system, you should let Docker choose the ports for you.
     * **/drouter/config** is the location where DataPower will persist the configuration using an easy to read and editable format.
     * **/drouter/local** is used to store source files such as JavaScript (GatewayScript), XSLT, key, certificates and so on.
-    * **DATAPOWER_INTERACTIVE=true** prompts for login to the DataPower CLI on stdin and must be used with [-it](https://docs.docker.com/engine/reference/run/#/foreground). This intermixes log and CLI output, to disable log output on stdout use `-e DATAPOWER_LOG_STDOUT=false` if intermixing is not desired.
+    * **DATAPOWER_INTERACTIVE=true** prompts for login to the DataPower CLI on stdin and must be used with -it. This intermixes log output, disable DATAPOWER_LOG_STDOUT if not desired.
 
 4. Login to the CLI to complete the initial setup, default username is `admin` and also password is `admin`
 5. Enable the Web GUI - this will be your primary development interface
@@ -56,7 +59,7 @@ We love things that simply work with minimal effort. Deploying your first DataPo
 
 6. Hooray! You have completed the initial setup. Open a Web browser to `https://localhost:9090` and login to the Web GUI using the username `admin` and password `admin`.
 
-7. Make a note of the directories created when you run the container. These directories are mounted from the container file system, and any edits from your workstation are picked up when you restart the container.
+7. Make a note of the directories created when you run the container. These directories are mounted from the container file system to your local file system. Any edits from your workstation are picked up immediately.
 ```
 $ ls $PWD
 config	local 
