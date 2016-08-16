@@ -2,16 +2,6 @@
 
 The smoke test for successfully installing and using any software is creating the *hello world* application or service. Like all good `hello world` applications, this one starts from absolutely nothing.
 
-Before creating your first gateway service, let's do a quick overview of the Web GUI. Tasks are grouped via icons in the left navigation bar:
-
- * __Services__: create new or view existing gateway services
- * __Status__: view status information about your gateway instance, such as networking, runtime requests/responses, and caches
- * __Patterns__: easily create new gateway services using the out-of-the box patterns
- * __Network__: view and configure network components and management interfaces (ie SSH, REST, SOAP, & Web GUI)
- * __Administration__: create application domains (provides configuration isolation), user accounts and much more. 
- 	__Note__: Most of these capabilities are available in the __default__ domain (current domain). It is recommended that you create your gateway services in a new domain.
- * __Object__: configure and view objects utilized by your gateway services   
-
 For this tutorial, we will try to catch some virtual __Pokemon__ (it seems that is what everyone is doing in 2016!). You will deploy a gateway service to securely connect to an existing endpoint: [https://pokemons.mybluemix.net/](https://pokemons.mybluemix.net/).
 
 Since, you need to securely connect to this server over https, lets import an SSL/TLS configuration to securely connect to our backend service.
