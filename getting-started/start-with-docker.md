@@ -18,20 +18,22 @@ It's the same if you are starting with a project someone else has started. Just 
 
 We love things that simply work with minimal effort. Deploying your first DataPower Gateway should be a similar experience to driving a brand new car (without the new car smell). The following steps should get you on the highway!
 
-1. Pull down the DataPower docker image from DockerHub. Of course this is optional, Docker is smart enough to get the image when it is run. Still, this might be a good time to familiarize yourself with what the image provides. See the [ibmcom/datapower](https://hub.docker.com/r/ibmcom/datapower/) Docker Hub page for details.
+1. Open the docker command prompt and create a new directory called **datapower**. You will run your DataPower container from this directory `cd datapower`
+2. Pull down the DataPower docker image from DockerHub. Of course this is optional, Docker is smart enough to get the image when it is run. Still, this might be a good time to familiarize yourself with what the image provides. See the [ibmcom/datapower](https://hub.docker.com/r/ibmcom/datapower/) Docker Hub page for details.
 
     ```
     docker pull ibmcom/datapower:latest
     ```
 
-2. After the download completes, the DataPower image should appear in your registry
+3. After the download completes, the DataPower image should appear in your registry
 
     ```
     REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
     ibmcom/datapower         latest              62ce04e36704        4 days ago          852.3 MB
     ```
 
-3. Start the container for the first time with the command below:
+4. Start the container for the first time with the command below:
+
     ```
     docker run -it \
       -v $PWD/config:/drouter/config \
@@ -39,7 +41,9 @@ We love things that simply work with minimal effort. Deploying your first DataPo
       -e DATAPOWER_ACCEPT_LICENSE=true \
       -e DATAPOWER_INTERACTIVE=true \
       -p 9090:9090 \
-      -p 8000-8025:8000-8025 \
+      -p 9022:22 \
+      -p 5554:5554 \
+      -p 8000-8010:8000-8010 \
       --name idg \
       ibmcom/datapower
     ```
@@ -50,18 +54,15 @@ We love things that simply work with minimal effort. Deploying your first DataPo
     * **/drouter/local** is used to store source files such as JavaScript (GatewayScript), XSLT, key, certificates and so on.
     * **DATAPOWER_INTERACTIVE=true** prompts for login to the DataPower CLI on stdin and must be used with -it. This intermixes log output, disable DATAPOWER_LOG_STDOUT if not desired.
 
-4. Login to the CLI to complete the initial setup, default username is `admin` and also password is `admin`
-5. Enable the Web GUI - this will be your primary development interface
-
+5. Login to the CLI to complete the initial setup, default username is `admin` and also password is `admin`
+6. Enable the Web GUI - this will be your primary development interface
     ```
-    configure; web-mgmt 0 9090 9090; write memory
+    configure; web-mgmt 0 9090 9090;
     ```
-
-6. Hooray! You have completed the initial setup. Open a Web browser to `https://localhost:9090` and login to the Web GUI using the username `admin` and password `admin`.
-
-7. Make a note of the directories created when you run the container. These directories are mounted from the container file system to your local file system. Any edits from your workstation are picked up immediately.
+7. Hooray! You have completed the initial setup. Open a Web browser to `https://localhost:9090` and login to the Web GUI using the username `admin` and password `admin`.
+8. Make a note of the directories created when you run the container. These directories are mounted from the container file system to your local file system. Any edits from your workstation are picked up immediately.
 ```
-$ ls $PWD
+$ ls
 config	local 
 ```
 
