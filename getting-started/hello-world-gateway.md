@@ -42,7 +42,7 @@ You are now ready to start deploying a gateway service to find some pokemons!
 	
 **Note**: The gateway service contains different rules for each HTTP methods (GET, POST, PUT, and DELETE). You can proxy any service that adheres to REST conventions. 
 
-3. Before you call the DataPower gateway service, lets directly call the backend service to make sure its available, [https://pokemons.mybluemix.net/api/pokemons/9ed78062996515b4db7e1b78d73208b0](https://pokemons.mybluemix.net/api/pokemons/9ed78062996515b4db7e1b78d73208b0). You can use any test client (or even a Web browser).
+3. Before you call the DataPower gateway service, lets directly call the backend service to make sure its available, [https://pokemons.mybluemix.net/api/pokemons/1](https://pokemons.mybluemix.net/api/pokemons/1). You can use any test client (or even a Web browser).
 
 	```
 	{
@@ -50,13 +50,13 @@ You are now ready to start deploying a gateway service to find some pokemons!
 		"moves": "slow"
 	},
 	"height": "70",
-	"name": "charmander",
-	"weight": 122,
-	"id": "9ed78062996515b4db7e1b78d73208b0"
+	"name": "ivysaur",
+	"weight": 200,
+	"id": "1"
 	}
 	```
 
-4. You will simply proxy the same request now using DataPower. Now test with the URL: [http://localhost:8000/api/pokemons/9ed78062996515b4db7e1b78d73208b0](http://localhost:8000/api/pokemons/9ed78062996515b4db7e1b78d73208b0). 
+4. You will simply proxy the same request now using DataPower. Now test with the URL: [http://localhost:8000/api/pokemons/1](http://localhost:8000/api/pokemons/1). 
 
 	Make sure you get the same JSON response. You know what they say about Pokemon - __Catch 'Em All__!
 5. Click the __Save changes__ link at the top, so you don't lose all those pokemon :)
