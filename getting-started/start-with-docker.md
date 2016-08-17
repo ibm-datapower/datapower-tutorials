@@ -1,5 +1,7 @@
 # Getting Started
 
+![demo](start-with-docker.gif)
+
 **Duration**: 7 minutes
 
 This tutorial will demonstrate how you can quickly setup gateway services to secure and optimize access to backend services.
