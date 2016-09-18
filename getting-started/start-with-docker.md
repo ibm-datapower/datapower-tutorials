@@ -2,6 +2,10 @@
 
 ![demo](start-with-docker.gif)
 
+**Prerequisites**: 
+
+-Docker 1.12 (other versions should work but instructions may vary)
+
 **Duration**: 7 minutes
 
 This tutorial will demonstrate how you can quickly setup gateway services to secure and optimize access to backend services.
@@ -59,9 +63,10 @@ We love things that simply work with minimal effort. Deploying your first DataPo
 5. Login to the CLI to complete the initial setup, default username is `admin` and also password is `admin`
 6. Enable the Web GUI - this will be your primary development interface
     ```
-    configure; web-mgmt 0 9090 9090;
+    configure; web-mgmt 0 9090;
     ```
 7. Hooray! You have completed the initial setup. Open a Web browser to `https://localhost:9090` and login to the Web GUI using the username `admin` and password `admin`.
+**Note**: If your docker machine is not running on localhost, enter the command `docker-machine ip` to find the host ip address.  
 8. Make a note of the directories created when you run the container. These directories are mounted from the container file system to your local file system. Any edits from your workstation are picked up immediately.
 ```
 $ ls
