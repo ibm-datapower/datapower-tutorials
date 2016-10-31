@@ -18,8 +18,30 @@ Open Wireshark and from the menu select “Preferences -> Protocols -> SSL”. I
 
 ![wireshark1](wireshark1.png)
 
-If your using a non-standard port for HTTPS, update “Preferences -> Protocols -> HTTP” as shown below:
+If you're using a non-standard port for HTTPS, update “Preferences -> Protocols -> HTTP” as shown below:
 
 ![wireshark2](wireshark2.png)
 
 Now load the packet capture file using "File -> Open" to see that the TLS sessions containing a complete TLS handshake are now decrypted automatically.
+
+## Troubleshooting
+
+If packets are not decrypting properly, you can enable a debug output file under "Preferences -> Protocols -> SSL":
+
+![wireshark3](wireshark3.png)
+
+Note: only sessions that have captured the full SSL keyexchange consisting of CLIENT_HELLO and SERVER_HELLO can be properly decrypted.
+
+## Limiting the scope of the result
+
+The sslkeyfile.log will contain the master secret for all sessions inbound and outbound from DataPower. If you need to limit the scope of the information given to a third-party for debugging, you can only copy a subset of the lines from the file. This will only allow the chosen sessions to be decrypted by the third party.
+
+In order to do this, find the CLIENT_HELLO frames of the sessions of interest in Wireshark and match the Random bytes to the lines in the sslkeyfile.log.
+
+![wireshark4](wireshark4.png)
+
+## Reference
+
+* [NSS Key Log format](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/Key_Log_Format)
+* [Decrypting TLS Browser Traffic With Wireshark – The Easy Way!](https://jimshaver.net/2015/02/11/decrypting-tls-browser-traffic-with-wireshark-the-easy-way/)
+* [Psst. Your Browser Knows All Your Secrets](https://isc.sans.edu/forums/diary/Psst+Your+Browser+Knows+All+Your+Secrets/16415/)
