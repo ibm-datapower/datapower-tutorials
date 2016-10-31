@@ -6,21 +6,21 @@ With DataPower 7.5.2 we added a new feature to log the session master secret, wh
 
 System administrators have the option to enable this feature when starting a network packet capture:
 
-￼![pcap](pcap1.png)
+![pcap](media/pcap1.png)
 
 Once the packet capture is started the system will begin logging the private master secret information to logtemp:///sslkeyfile.log
 
 Stop the packet capture and copy logtemp:///sslkeyfile.log and temporary:///capture.pcap to a system running Wireshark:
 
-![filemgmt](filemgmt.png)
+![filemgmt](media/filemgmt.png)
 
 Open Wireshark and from the menu select “Preferences -> Protocols -> SSL”. In the (Pre)-Master-Secret log filename input, specify the location of the sslkeyfile.log copied from DataPower:
 
-![wireshark1](wireshark1.png)
+![wireshark1](media/wireshark1.png)
 
 If you're using a non-standard port for HTTPS, update “Preferences -> Protocols -> HTTP” as shown below:
 
-![wireshark2](wireshark2.png)
+![wireshark2](media/wireshark2.png)
 
 Now load the packet capture file using "File -> Open" to see that the TLS sessions containing a complete TLS handshake are now decrypted automatically.
 
@@ -28,7 +28,7 @@ Now load the packet capture file using "File -> Open" to see that the TLS sessio
 
 If packets are not decrypting properly, you can enable a debug output file under "Preferences -> Protocols -> SSL":
 
-![wireshark3](wireshark3.png)
+![wireshark3](media/wireshark3.png)
 
 Note: only sessions that have captured the full SSL keyexchange consisting of CLIENT_HELLO and SERVER_HELLO can be properly decrypted.
 
@@ -38,7 +38,7 @@ The sslkeyfile.log will contain the master secret for all sessions inbound and o
 
 In order to do this, find the CLIENT_HELLO frames of the sessions of interest in Wireshark and match the Random bytes to the lines in the sslkeyfile.log.
 
-![wireshark4](wireshark4.png)
+![wireshark4](media/wireshark4.png)
 
 ## Reference
 
