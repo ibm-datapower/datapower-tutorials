@@ -43,5 +43,3 @@ In order to do this, find the CLIENT_HELLO frames of the sessions of interest in
 ## Reference
 
 * [NSS Key Log format](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/Key_Log_Format)
-* [Decrypting TLS Browser Traffic With Wireshark – The Easy Way!](https://jimshaver.net/2015/02/11/decrypting-tls-browser-traffic-with-wireshark-the-easy-way/)
-* [Psst. Your Browser Knows All Your Secrets](https://isc.sans.edu/forums/diary/Psst+Your+Browser+Knows+All+Your+Secrets/16415/)
