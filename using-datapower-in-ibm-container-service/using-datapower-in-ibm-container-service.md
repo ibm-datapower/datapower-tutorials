@@ -2,6 +2,8 @@
 
 IBM DataPower Gateway for Docker can be deployed in all sorts of places, including in IBM Container Service (ICS). While DataPower isn't yet in the container services' catalog, you can still use use DataPower in the container service, and this guide will show you how.
 
+If you're a developer wondering if this is a good place to start your DataPower Development, the answer is an emphatic *no*. If you're starting to wonder how you might deploy a composed DataPower application on IBM Container Service, then this is a great place to start.
+
 ## Preparation
 
 Before you get started, please make sure you have an account on [IBM Bluemix](http://bluemix.net) and that you've installed the [IBM Containers plug-in](https://console.ng.bluemix.net/docs/containers/container_cli_cfic.html#container_cli_cfic).
