@@ -22,13 +22,13 @@ Don't worry, this is just the introduction. Later on we'll dive deeper into how 
 
 ### Backup Singer(s) -- `nodejs-hostname` / `backend`
 
-As the backup singers, we have `nodejs-hostname`. While they vary in number, their HTTP containerised NodeJS rendition of "Hello World" adds a touch of harmony -- they're all singing the same tune you can pick out each voice! 
+As the backup singers, we have `nodejs-hostname`. While they vary in number, their HTTP containerised NodeJS rendition of "Hello World" adds a touch of harmony -- they're all singing the same tune but you can still pick out each voice! 
 
 When asked a question on port `8080`, it answers with `Hello World from <hostname>`. To keep things interesting, the back end also logs `Answered request with <hostname>` to stdout for every request.
 
 ### Front Man -- `datapower`
 
-This DataPower application has been in a number of bands, you can check them out over in [DataPower Labs](). This same application was recently in `ibmcom-datapower-example` and `customer-build`, he's given up his `Makefile` ways and is going Compose for this collaboration.
+This DataPower application has been in a number of bands, you can check them out over in [DataPower Labs](https://github.com/ibm-datapower/datapower-labs). This same application was recently in `ibmcom-datapower-example` and `customer-build`, he's given up his `Makefile` ways and is going Compose for this collaboration.
 
 Mr. Power is keeping it pretty mellow in this band, adding the pleasing ping of `HTTPS` to the endeavor and a little bit of Gateway Script to modify the response. Every HTTP request that comes in on port 443 DataPower sends to one of the backends on port 8080. When the response comes back, DataPower prepends `DataPower Proxied:` to the content of the backend's response.
 
@@ -42,7 +42,7 @@ A container like `curldriver` would drive tests in the pre-deployment phases of 
 
 ### Manager -- `docker-compose`
 
-As the booker of gigs and the reserver of studios for both practice and recording, no one sees the band without Docker Compose. Since the group could be a duet or an octet, it's Compose that gets the right number of backup singers. Mr. Power and the Hostnames aren't in the same city unless the Manager puts them there. Compose is what ties the venue to the band to the audience -- there's no show without the Manager
+As the booker of gigs and the reserver of studios for both practice and recording, no one sees the band without Docker Compose. Since the group could be a duet or an octet, it's Compose that gets the right number of backup singers. Mr. Power and the Hostnames aren't in the same city unless the Manager puts them there. Compose is what ties the venue to the band to the audience -- there's no show without the Manager.
 
 And with that, I'll stop torturing the analogy. We know that the four pieces each have their role -- that `curldriver` generates requests and sends them to `datapower`, which in turn proxies requests to `backend`. Responses that return from `backend` are modified by `datapower` and returned to `curldriver`. These are the three types of containers that make up this composed application.
 
@@ -99,7 +99,7 @@ done
 
 Notice the url? All it does is poke at `https://datapower/`, and `datapower` is the DNS name of the DataPower container in the network in which both `curldriver` and `datapower` are running. The image has the hostname `datapower` burned-in, and `docker-compose` guarantees that the DNS name `datapower` refers to the correct address at run time.
 
-Things are a little bit more complicated for the `datapower` image because it does not know how many `backend` images there will be. So instead of being truly hardcoded the way `curldriver` referred to `datapower`, `datapower` has to figure where the one or more `backend` hosts are.
+Things are a little bit more complicated for the `datapower` image because it does not know how many `backend` hosts there will be. So instead of being truly hardcoded the way `curldriver` referred to `datapower`, `datapower` has to figure where the one or more `backend` hosts are.
 
 Let's take a look at how this admittedly extremely simplistic way of discovering services works. Consider this snippet from `src/datapower/src/start/loadbalancer-group.sh`, which is run before DataPower itself starts and generates a config file for the DataPower `loadbalancer-group`:
 
@@ -152,13 +152,13 @@ git clone https://github.com/ibm-datapower/datapower-tutorials.git
 cd datapower-tutorials/datapower-docker-compose-hello-world/src
 ```
 
-First we need to build our images. Since the project includes sample `docker-compose.yml` files for both v1 and v2, we'll be explicit about the one we're using. Also, we're going to be explicit about the name of the project. The name `foo` seems like a good name to start with:
+First we need to build our images. Since the project includes sample `docker-compose.yml` files for both v1 and v2, we'll be explicit about the one we're using. Also, we're going to be explicit about the name of the project. The name `foo` seems like a good project name to start with:
 
 ```
 docker-compose -f docker-compose-v2.yml -p foo build
 ```
 
-With that command, `docker-compose` will go and build each of the three images. Let's see what `docker-compose` made for us:
+With that command, `docker-compose` will build each of the three images. Remember that subsequent builds will take far less time because of the way `docker build` caches results. Let's see what `docker-compose` made for us:
 
 ```
 $ docker images
@@ -312,7 +312,8 @@ curldriver_1  | DataPower Proxied: Hello world from b6521fe5bdd0
 As before, I stop the contaiers with `Ctrl+C` and remove the containers with `docker-compose rm`.
 
 ```
-^CGracefully stopping... (press Ctrl+C again to force)
+^C
+Gracefully stopping... (press Ctrl+C again to force)
 Stopping foo_curldriver_1 ... done
 Stopping foo_datapower_1 ... done
 Stopping foo_backend_2 ... done
