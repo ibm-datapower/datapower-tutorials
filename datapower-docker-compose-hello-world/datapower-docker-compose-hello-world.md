@@ -9,7 +9,8 @@ This application is most similar to what one might find in an an automated test 
 Before you attempt this tutorial, please be sure that you:
 
 - Have Docker installed and running
-- Have run DataPower as described on the 
+- Have run DataPower as described on the [DataPower Docker Hub page](https://hub.docker.com/r/ibmcom/datapower/)
+- Have [installed Docker Compose](https://docs.docker.com/compose/install/)
 
 ## Meet the Band
 
@@ -37,7 +38,7 @@ He doesn't tour with the band, but he makes sure the band sounds great in the st
 
 If there's a wrong note, Earl or Carl (we never know what to call him) lets us know so the band can lock in their sound for their tour.
 
-A container like cURL would drive tests in the pre-deployment phases of a container-based CI/CD system.
+A container like `curldriver` would drive tests in the pre-deployment phases of a container-based CI/CD system.
 
 ### Manager -- `docker-compose`
 
