@@ -1,0 +1,16 @@
+curldriver: 
+  image: registry.ng.bluemix.net/hstenzel/ibmcomdatapowercompose_curldriver
+  links: 
+    - datapower
+datapower:
+  image: registry.ng.bluemix.net/hstenzel/datapowercompose
+  expose:
+    - "443"
+  ports:
+    - "443"
+  links:
+    - backend
+backend:
+  image: registry.ng.bluemix.net/hstenzel/nodejs-hostname
+  expose:
+    - "8080"

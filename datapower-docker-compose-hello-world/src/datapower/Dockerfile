@@ -1,0 +1,7 @@
+FROM ibmcom/datapower:beta
+ENV  DATAPOWER_ACCEPT_LICENSE=true \
+     DATAPOWER_WORKER_THREADS=2 \
+     DATAPOWER_INTERACTIVE=true
+COPY src/ /
+EXPOSE 443
+CMD ["/start.sh"]

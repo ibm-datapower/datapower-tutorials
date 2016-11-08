@@ -1,0 +1,12 @@
+version: '2'
+services:
+   curldriver:
+     build: curldriver
+     depends_on:
+      - datapower
+   datapower:
+     build: datapower
+     depends_on:
+      - backend
+   backend:
+     build: nodejs-hostname
