@@ -145,7 +145,7 @@ CONTAINER ID        IMAGE                                                      C
 64c98828-0e7        registry.ng.bluemix.net/hstenzel/datapower-sample:latest   ""                  21 seconds ago      Building 19 seconds ago   22/tcp, 9090/tcp    ics-test
 ```
 
-Once `cf ic ps` shows `Running`, DataPower is up. We can see that with `cf ic logs unit-test` -- there will be lines indicating that both `ssh` and `web-mgmt` are up. But we still cannot access DataPower because there is no public IP address associated with the container.
+Once `cf ic ps` shows `Running`, DataPower is up. We can see that with `cf ic logs ics-test` -- there will be lines indicating that both `ssh` and `web-mgmt` are up. But we still cannot access DataPower because there is no public IP address associated with the container.
 
 Let us assume that you don't have any ICS IP addresses yet -- if you're just getting started, this is probably the case, but you can check with the `cf ic ip` command.
 
