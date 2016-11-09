@@ -26,7 +26,7 @@ Since our only goal here is to demonstrate DataPower running in IBM Container Se
 
 This is a bit unusual because normally we would *not* want to build a DataPower image with management interfaces enabled. This is a special case because the only thing we are intending to show is DataPower running in IBM Container Service.
 
-In a new directory, we'll create two files. We will need `auto-startup.cfg`, which will hold the configuration DataPower will run when it starts; and we will create a `Dockerfile` that describes how our image is built. If you'd rather not create the files yourself, you can find this content [here](src).
+In a new directory, we'll create two files. We will need `auto-startup.cfg`, which will hold the configuration DataPower will run when it starts; and we will create a `Dockerfile` that describes how our image is built. If you'd rather not create the files yourself, you can find this content [here](https://github.com/ibm-datapower/datapower-tutorials/tree/master/using-datapower-in-ibm-container-service/src).
 
 `auto-startup.cfg` simply enables `ssh` and `web-mgmt`:
 
