@@ -2,7 +2,7 @@
 
 If you find yourself scratching your head when asked the question "How do I build portable composed applications with DataPower?", you've come to the right place. This tutorial will show you how to build an application consisting of a load driver, a DataPower Gateway, and a back-end server where each of the parts are separate containers held together with Docker Compose.
 
-This application is most similar to what one might find in an an automated test kicked off by a CI/CD tool, but it's real purpose is to open a discussion on the ways DataPower applications can be composed.
+This application is most similar to what one might find in an automated test kicked off by a CI/CD tool, but it's real purpose is to open a discussion on the ways DataPower andapplications can be composed.
 
 ## Prerequisites
 
@@ -65,7 +65,7 @@ services:
      build: nodejs-hostname
 ```
 
-There are three services: `curldriver`, `datapower`, and `backend`. Each can be built by `docker-compose`; the `build:` line defines the directory that containing the source for `docker build`.
+There are three services: `curldriver`, `datapower`, and `backend`. Each can be built by `docker-compose`; the `build:` line defines the directory that contains the source for `docker build`.
 
 The `docker-compose.yml` file describes the dependencies between the applications. So we know that `curldriver` can't work without `datapower` which likewise can't work without `backend`.
 
