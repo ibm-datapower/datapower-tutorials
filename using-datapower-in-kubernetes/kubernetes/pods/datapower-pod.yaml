@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: datapower
+    labels:
+        app: datapower
+spec:
+    containers:
+        - name: datapower
+          image: ibmcom/datapower:7.5.2.0.281259
+          ports:
+              - containerPort: 9090
+                name: web-mgmt
+                protocol: TCP
+
+              

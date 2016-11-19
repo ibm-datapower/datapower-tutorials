@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+    name: "datapower"
+spec:
+    selector:
+        app: "datapower"
+    ports:
+        - protocol: "TCP"
+          port: 443
+          nodePort: 31000
+          type: NodePort

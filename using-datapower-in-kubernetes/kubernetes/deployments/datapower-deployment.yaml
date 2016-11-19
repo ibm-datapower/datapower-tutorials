@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: datapower
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: datapower
+        track: stable
+    spec:
+      containers:
+      - name: datapower
+        image: "ibmcom/datapower:latest"
+        command: ["/bin/sh","-c","cat /drouter/config/auto-startup.cfg"]
+        ports:
+        - name: ssh
+          containerPort: 22
+        - name: web-mgmt
+          containerPort: 9090
+        volumeMounts:
+        - name: config-volume
+          mountPath: /drouter/config
+  volumes:
+  - name: config-volume
+    configMap:
+        name: datapower-config    
