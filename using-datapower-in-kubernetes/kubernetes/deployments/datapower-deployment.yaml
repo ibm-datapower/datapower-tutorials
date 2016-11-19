@@ -12,8 +12,7 @@ spec:
     spec:
       containers:
       - name: datapower
-        image: "ibmcom/datapower:latest"
-        command: ["/bin/sh","-c","cat /drouter/config/auto-startup.cfg"]
+        image: "ibmcom/datapower:latest"      
         ports:
         - name: ssh
           containerPort: 22

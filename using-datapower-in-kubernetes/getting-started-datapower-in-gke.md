@@ -206,8 +206,7 @@ spec:
     spec:
       containers:
       - name: datapower
-        image: "ibmcom/datapower:latest"
-        command: ["/bin/sh","-c","cat /drouter/config/auto-startup.cfg"]
+        image: "ibmcom/datapower:latest"        
         ports:
         - name: ssh
           containerPort: 22
@@ -216,10 +215,10 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /drouter/config
-  volumes:
-  - name: config-volume
-    configMap:
-        name: datapower-config    
+    volumes:
+    - name: config-volume
+        configMap:
+            name: datapower-config    
 ```
 
 Note that we use the `datapower-config` ConfigMap as a `volumes` parameter and mount it in the `volumeMounts` section.
