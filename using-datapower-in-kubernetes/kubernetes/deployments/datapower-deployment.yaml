@@ -22,7 +22,7 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /drouter/config
-  volumes:
-  - name: config-volume
-    configMap:
-        name: datapower-config    
+      volumes:
+      - name: config-volume
+        configMap:
+          name: datapower-config    
