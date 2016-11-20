@@ -143,7 +143,7 @@ We can can also see this change in the event output of our replica set.
 $ kubectl describe replicasets
 ```
 
-Lastly, our first Google Cloud Session will also show our previous interative session with the container has now
+Lastly, our first Google Cloud Session will also show our previous interactive session with the container has now
 been terminated since we issued a deletion of the pod. To reattach to the new container created by the replica set,
 we can issue:
 
@@ -157,7 +157,7 @@ Once you are done you can delete the deployment as we will not make further use 
 
 # Configuration
 
-Another good practice is to separate your application code from your configuration. To this end,
+One best practice is to separate your application code from your configuration. To this end,
 Kubernetes provides a `ConfigMap` resource as of version 1.2.
 A ConfigMap is a flexible object for providing your application with non-secret configuration data. The data
 is presented as key-value pairs and can represent cli arguments, environment variables, and files in a mounted volume.
@@ -208,8 +208,6 @@ spec:
       - name: datapower
         image: "ibmcom/datapower:latest"        
         ports:
-        - name: ssh
-          containerPort: 22
         - name: web-mgmt
           containerPort: 9090
         volumeMounts:
@@ -235,12 +233,18 @@ This will create a Kubernetes *Service* that we can use to get the external IP a
 
 `$ kubectl get service datapower`
 
+![kubectl_get_svc_datapower](media/kubectl_get_svc_datapower.png)
+
 Which might take a minute or two to populate the external IP. Meanwhile, we also make sure that traffic from 
 external IPs is allowed by opening a firewall traffic rule on port 9090 as follows:
 
 `$ gcloud compute firewall-rules create datapower-web-mgmt --allow=tcp:9090`
 
+We should now be able to access our web-mgmt service from the public internet.
 
+![datapower_web-mgmt_exposed](media/datapower_web_mgmt_exposed.png)
+
+Success!
 
 # Cleaning it Up
 
