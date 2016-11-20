@@ -106,7 +106,7 @@ $ kubectl run --stdin --tty datapower --image=ibmcom/datapower:latest --env="DAT
 This will automatically create a default Kubernetes _deployment_ , which is a Kubernetes construct that lets you declare the desired state of
 your application and is used to update your pods or replica sets to try to match the current state of your application to that of the desired state.
 You can specify deployments, pods, services, replica sets, etc. declaratively in Kubernetes by writing a
-corresponding YAML configuration file.
+corresponding configuration file.
 
 In a separate Google Cloud Shell session, we can run `$ kubectl describe deployments` to show the details
  of the *datapower* deployment we just created.
@@ -223,7 +223,23 @@ spec:
 
 Note that we use the `datapower-config` ConfigMap as a `volumes` parameter and mount it in the `volumeMounts` section.
 The `mountPath: /drouter/config` is special in this case because DataPower will automatically execute a config file named
-*auto-startup.cfg* place in the */drouter/config*
+*auto-startup.cfg* if found in the */drouter/config* directory.
+
+# Exposing Application to the Internet
+
+We can expose the web-mgmt service we enabled through our `datapower-config` ConfigMap by running:
+
+`$ kubectl expose deployment datapower --target-port=9090 --type=LoadBalancer`
+
+This will create a Kubernetes *Service* that we can use to get the external IP and port we just exposed. To view it, run:
+
+`$ kubectl get service datapower`
+
+Which might take a minute or two to populate the external IP. Meanwhile, we also make sure that traffic from 
+external IPs is allowed by opening a firewall traffic rule on port 9090 as follows:
+
+`$ gcloud compute firewall-rules create datapower-web-mgmt --allow=tcp:9090`
+
 
 
 # Cleaning it Up
