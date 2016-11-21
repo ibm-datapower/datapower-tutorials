@@ -11,17 +11,17 @@ DataPower supports CRLs in DER or PEM format and can fetch them from an LDAP, HT
 ###Flows
 The following Diagrams should give you an idea what a real world flow could be.
 
-![crl-flow](/media/CRLFlow.png)
+![crl-flow](media/CRLFlow.png)
 
 In the diagram above we see the behaviour in a "ideal" scenario, the certificates are still valid.
 The CRL Update Policy checks the CRL endpoints as defined in the certificate.
 These endpoints need to be configured, as they are not auto configured from the certificate. However one can specify in the validation credentials that if the CRL endpoint as defined in the rfc3280 compliant extension of the certificate should be checked for validation to succeed.
 
-![crl-flow2](/media/CRLFlow2.png)
+![crl-flow2](media/CRLFlow2.png)
 
 When the client notices that his key has been compromised he notifies his CA who then add's the serial number of the respective certificate to the CRL. He then resigns it with his certificate and publishes the CRL on the endpoint as listed in the issued certificates.
 
-![crl-flow3](/media/CRLFlow3.png)
+![crl-flow3](media/CRLFlow3.png)
 
 The next time the CRL endpoint get's polled by DataPower the all validation credentials trying to validate the revoked certificate will now fail.
 
