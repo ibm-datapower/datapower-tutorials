@@ -1,0 +1,21 @@
+version: '2'
+services:
+    mq:
+      build: mq
+    http:
+      build: http
+    datapower:
+      build: datapower
+      depends_on:
+       - mq
+       - http
+    soapui:
+      image: ddavison/soapui:latest
+      depends_on:
+       - datapower
+    curldriver:
+      build: curldriver
+      depends_on:
+       - soapui
+
+
