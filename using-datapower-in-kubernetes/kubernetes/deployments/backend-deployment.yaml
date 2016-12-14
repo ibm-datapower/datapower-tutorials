@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: backend
+        track: stable
+    spec:
+      containers:
+      - name: backend
+        image: "hstenzel:nodejs-hostname:latest"
+        stdin: true
+        tty: true      
+        ports:
+        - name: web-app
+          containerPort: 8080
