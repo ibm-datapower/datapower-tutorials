@@ -1,5 +1,5 @@
 ## A DataPower and MQ environment with Docker Compose 
-This sample demonstrates how to utilize multiple containers, orchestrated by Docker Compose, to create an environment that includes DataPower receiving and processing a request and writing the resulting message to an MQ back end. Subsequent support containers are included to send requests and store style sheets and schema utilized by the DataPower processing policy. In this sample, I'll outline the travels of the request message, `Bob`, through the pipeline created in the docker-compose environment.
+This sample demonstrates how to utilize multiple containers, orchestrated by Docker Compose, to create an environment that includes DataPower receiving and processing a request and writing the resulting message to an MQ back end. Subsequent support containers are included to send requests and store style sheets and schema utilized by the DataPower processing policy. In this sample, I'll outline the travels of the request message, `bob`, through the pipeline created in the docker-compose environment.
 
 This is a highly customizable example and it is encouraged that you play around with it.
 
@@ -7,7 +7,7 @@ This is a highly customizable example and it is encouraged that you play around 
 Before you attempt this tutorial, please be sure that you:
 
 - Read, and better yet attempt, the [Docker Compose Hello World Application](https://github.com/ibm-datapower/datapower-tutorials/blob/master/datapower-docker-compose-hello-world/datapower-docker-compose-hello-world.md) sample. This is a great starting point that offers some of the detailed framework of how DataPower containers can be created and used in a continuous integration system.
-- Create Docker MQ base image- Follow the instructions on [ibmcom/mq](https://hub.docker.com/r/ibmcom/mq/) on Docker Hub to create a base Docker MQ image. A link to the source is in the Overview section. A video link to the process is also available. Make sure to use MQ version 8 and use the image name and tag mq:8. This image will be used as the base to create the MQ image in this sample and is a one-time exercise.
+- For simplicity, in this sample, I created and used a Docker MQ base image. If you wish to run this step manually, please follow the instrucitons on [ibmcom/mq](https://hub.docker.com/r/ibmcom/mq/) on Docker Hub to create your own base Docker MQ image.
 
 
 ## The Composed Application
@@ -35,13 +35,14 @@ services:
 ```
 
 In all, the environment consists of five services, which build five images, and run five containers. 
-The `curldriver` service builds an image with curl installed from an Ubuntu image.
-The `soapui` service builds a SoapUI image from Docker Hub.
-The `datapower` service builds a fully configured DataPower, with an application domain that contains a multi-protocol gateway, from ibmcom/datapower.
-The `http` service builds an apache server image from Docker Hub. 
-The `mq` service builds a configured MQ queue manager, built off a base MQ image, from Docker Hub.
 
-The general flow is a message is sent via curl to a SoapUI container which sends a test request to DataPower. The request is transformed by a processing policy in DataPower, which retrieves and utilizes style sheets and schema from a web server. Finally, the resulting message is sent from DataPower to a back end MQ queue manager. An assertion on the response is evaluated by SoapUI and a message is returned with the outcome of the test.
+- The `curldriver` service builds an image with curl installed from an Ubuntu image.
+- The `soapui` service builds a SoapUI image from Docker Hub.
+- The `datapower` service builds a fully configured DataPower, with an application domain that contains a multi-protocol gateway, from ibmcom/datapower.
+- The `http` service builds an apache server image from Docker Hub. 
+- The `mq` service builds a configured MQ queue manager, built off a base MQ image, from Docker Hub.
+
+The general flow is a message is sent via curl to a SoapUI container, which sends a test request to DataPower. The request is transformed by a processing policy in DataPower, which retrieves and utilizes style sheets and schema from a web server. Finally, the resulting message is sent from DataPower to a back end MQ queue manager. An assertion on the response is evaluated by SoapUI and a message is returned with the outcome of the test.
 
 From the docker-compose.yml file, you can see that the services have dependencies on one another. As in the Hello World docker compose example, the networking in the self-contained environment is configured and controlled by Docker. All of the containers are aware of each other in the network and the different nodes can be referred by one another as they are named by the `docker-compose.yml`.
 
@@ -52,7 +53,7 @@ git clone https://github.com/ibm-datapower/datapower-tutorials.git
 cd datapower-tutorials/datapower-docker-compose-dp-mq/src
 ```
 
-We'll name the project bob and build it with the following command:
+We'll name the project "bob" and build it with the following command:
 ```
 docker-compose -p bob build
 ```
@@ -61,22 +62,22 @@ This builds four images as you can see below:
 ```
 $ docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-foo_curldriver      latest              cb496bbd7b7c        12 minutes ago      184.2 MB
-foo_datapower       latest              dd56a9be74e0        14 minutes ago      716.7 MB
-foo_mq              latest              b003e8e70670        16 minutes ago      844.4 MB
-foo_http            latest              e55379457250        16 minutes ago      244.6 MB
+bob_curldriver      latest              cb496bbd7b7c        12 minutes ago      184.2 MB
+bob_datapower       latest              dd56a9be74e0        14 minutes ago      716.7 MB
+bob_mq              latest              b003e8e70670        16 minutes ago      844.4 MB
+bob_http            latest              e55379457250        16 minutes ago      244.6 MB
 ```
 Note that the `soapui` image is not created at docker-compose build-time as it is an image from Docker Hub and will be created during the docker-compose up command.
 
-Next, we'll run the images to create containers that will process the request. When the docker-compose up command is issued, you can follow along as the project containers are created and sample messages are sent through the workflow:
+Next, we'll run the images, to create containers. that will process the request. When the docker-compose up command is issued, you can follow along as the project containers are created and sample messages are sent through the workflow:
 ```
 $ docker-compose -p bob up
 ...
-Creating foo_http_1
-Creating foo_mq_1
-Creating foo_datapower_1
-Creating foo_soapui_1
-Creating foo_curldriver_1
+Creating bob_http_1
+Creating bob_mq_1
+Creating bob_datapower_1
+Creating bob_soapui_1
+Creating bob_curldriver_1
 ...
 curldriver_1  | sending message 1
 soapui_1      | 172.18.0.6 - - [29/Nov/2016 13:59:50] "POST / HTTP/1.1" 200 -
@@ -106,8 +107,8 @@ curldriver_1  | response 1 received
 ```
 In the message being returned by the `bob_soapui_1` container, you can see if the test passed by looking for the VALID status of the Assertion (fourth line from the bottom in the output above).
 
-## Request Flow- Meet Bob
-Here I'll outline the travels of the request message, Bob, through the pipeline created in the docker-compose environment. 
+## Request Flow- Meet bob
+Here I'll outline the travels of the request message, `bob`, through the pipeline created in the docker-compose environment. 
 
 First the `bob_curldriver_1` container runs the following shell script.
 ```
