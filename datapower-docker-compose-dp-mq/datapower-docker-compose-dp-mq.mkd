@@ -112,6 +112,10 @@ curldriver_1  | response 1 received
 ```
 In the message being returned by the `bob_soapui_1` container, you can see if the test passed by looking for the VALID status of the Assertion (fourth line from the bottom in the output above).
 
+Depending on the system on which you are deploying, the first message or two may fail to be processed as the environment may still be building. This is easily dectable in the console logs.
+
+When the fifth message has been processed you may exit the test with the docker command ctrl+c, which will exit and stop the containers. To rerun the test, run the docker-compose up command again.
+
 ## Request Flow- Meet bob
 Here I'll outline the travels of the request message, `bob`, through the pipeline created in the docker-compose environment. 
 
@@ -144,4 +148,4 @@ When you have completed your testing, you can remove the containers created duri
 ```
 docker-compose -p bob rm
 ```
-You can rebuild the environment with the docker-compose run command again.
+You can rerun the environment by issuing the docker-compose run command again.
