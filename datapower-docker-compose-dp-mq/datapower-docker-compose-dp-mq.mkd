@@ -47,7 +47,7 @@ The general flow is a message is sent via curl to a SoapUI container, which send
 From the docker-compose.yml file, you can see that the services have dependencies on one another. As in the Hello World docker compose example, the networking in the self-contained environment is configured and controlled by Docker. All of the containers are aware of each other in the network and the different nodes can be referred by one another as they are named by the `docker-compose.yml`.
 
 ## Run the Application
-In order to run the application, you need to get the source. Run the following commands:
+In order to run the application, you need to get the source. Run the following commands (note: if you have completed the docker-compose hello world sample, you need only run the second command from the datapower-tutorials directory):
 ```
 git clone https://github.com/ibm-datapower/datapower-tutorials.git
 cd datapower-tutorials/datapower-docker-compose-dp-mq/src
@@ -67,9 +67,14 @@ bob_datapower       latest              dd56a9be74e0        14 minutes ago      
 bob_mq              latest              b003e8e70670        16 minutes ago      844.4 MB
 bob_http            latest              e55379457250        16 minutes ago      244.6 MB
 ```
-Note that the `soapui` image is not created at docker-compose build-time as it is an image from Docker Hub and will be created during the docker-compose up command.
+Note that the `bob_soapui` image is not created at docker-compose build-time as it is an image from Docker Hub and will be pulled during the docker-compose up command.
 
-Next, we'll run the images, to create containers. that will process the request. When the docker-compose up command is issued, you can follow along as the project containers are created and sample messages are sent through the workflow:
+Next, we will run the images, to create our environment, which will then process the request. 
+```
+docker-compose -p bob up
+```
+
+When the docker-compose up command is issued, you can follow along as the project containers are created and sample messages are sent through the workflow:
 ```
 $ docker-compose -p bob up
 ...
@@ -115,7 +120,7 @@ First the `bob_curldriver_1` container runs the following shell script.
  #!/bin/bash
 sleep 30
 
-for (( i=1; i <= 100; i++ ))
+for (( i=1; i <= 5; i++ ))
   do
    echo "sending message $i"
      curl --silent --insecure --form "project=@/usr/local/bin/grow-soapui-project.xml" --form "suite=sendRequestGrow" http://soapui:3000 || echo curl error $?
@@ -123,7 +128,7 @@ for (( i=1; i <= 100; i++ ))
   sleep 5
   done
 ```
-The script curls a SoapUI project to `bob_soapui_1`. The script is set to run 100 times every five seconds. These parameters are adjustable to your liking.
+The script curls a SoapUI project to `bob_soapui_1`. The script is set to run 5 times with a five second delay between each. These parameters are adjustable to your needs/liking.
 
 `bob_soapui_1` accepts the curl request and processes the test defined in the SoapUI project suite. This is where Bob is created as an XML message and sent to `bob_datapower_1`.
 
@@ -133,3 +138,10 @@ Bob is placed on a queue in `bob_mq_1` and his travel could very well end here; 
 
 ## Making Changes- You have the power
 The power to make changes in this sample is up to you. The construction of the environment lends itself to customization. The processing policy in the DataPower configuration can be replaced; the SoapUI project can be changed with a different test or additional requests could be added; the curl driver parameters can be adjusted to change the rate and duration of test messages; multiple MQ queue managers can be added. The list is endless and completely up to you.
+
+##Cleaning Up
+When you have completed your testing, you can remove the containers created during the exercise with the following command:
+```
+docker-compose -p bob rm
+```
+You can rebuild the environment with the docker-compose run command again.
