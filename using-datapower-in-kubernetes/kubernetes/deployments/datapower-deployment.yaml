@@ -39,9 +39,6 @@ spec:
       - name: config-volume
         configMap:
           name: datapower-config    
-      - name: config-foo-volume
-        configMap:
-          name: datapower-foo-config
       - name: local-foo-volume
         configMap:
           name: datapower-local-foo

@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: "hstenzel:nodejs-hostname:latest"
+        image: "hstenzel/nodejs-hostname:latest"
         stdin: true
         tty: true      
         ports:
