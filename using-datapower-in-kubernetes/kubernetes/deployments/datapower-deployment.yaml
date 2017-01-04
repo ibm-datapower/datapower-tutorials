@@ -13,15 +13,35 @@ spec:
       containers:
       - name: datapower
         image: "ibmcom/datapower:latest"
-        stdin: "true""
-        tty: "true"      
+        stdin: true
+        tty: true      
         ports:
         - name: web-mgmt
           containerPort: 9090
+        env:
+        - name: DATAPOWER_ACCEPT_LICENSE
+          value: "true"
+        - name: DATAPOWER_INTERACTIVE
+          value: "true"
         volumeMounts:
-        - name: config-volume
-          mountPath: /drouter/config
+        - mountPath: /drouter/config/foo/foo.cfg
+          name: config-volume
+          subPath: foo.cfg
+        - mountPath: /drouter/config/auto-startup.cfg
+          name: config-volume
+          subPath: auto-startup.cfg
+        - mountPath: /drouter/config/auto-user.cfg
+          name: config-volume
+          subPath: auto-user.cfg
+        - mountPath: /drouter/local/foo
+          name: local-foo-volume
       volumes:
       - name: config-volume
         configMap:
           name: datapower-config    
+      - name: config-foo-volume
+        configMap:
+          name: datapower-foo-config
+      - name: local-foo-volume
+        configMap:
+          name: datapower-local-foo
