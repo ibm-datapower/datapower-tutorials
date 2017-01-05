@@ -6,20 +6,44 @@ By building up from the core concepts of how applications are deployed and mange
 build the foundation for more advanced topics such as application configuration, service discovery, scaling,
 update rollouts, and monitoring.
 
-This tutorial uses the Google Container Engine to provide a hosted Kubernetes environment.
+This tutorial uses the Google Container Engine to provide a hosted Kubernetes environment. Naturally,
+you can use any Kubernetes environment of your choosing. As such, we will mark the sections pertaining to
+GKE with an "(Optional)" designation.
 
-## Before We Begin
+## Tools we will use
+* Docker
+    * We use Docker to package, distribute and run 
+    * https://www.docker.com
 
-### Create  Google Cloud Platform (GCP) account
+* IBM DataPower Geteway for Docker
+    * Available as a Docker image in DockerHub
+    * https://hub.docker.com/r/ibmcom/datapower/
+    * https://developer.ibm.com/datapower/
+
+* Kubernetes
+    * Handle the heavy lifting of orchestrating our application
+    * http://kubernetes.io
+
+* Google Container Engine (GKE) (Optional)
+    * A hosted Kubernetes service
+    * https://cloud.google.com/container-engine
+
+* Google Cloud Shell (Optional)
+    * A shell environment for managing Google Cloud Platform resources
+    * https://cloud.google.com/shell/docs/
+    
+## Setting up our Environment
+
+### Create  Google Cloud Platform (GCP) account (Optional)
 In order to best follow along with this tutorial, you will want access to a Google Cloud Platform account.
 You can use an existing account or sign up for a free trial 
 [here](https://console.cloud.google.com/freetrial "Create a Google Cloud Platform account").
 
-### Create a GCP Project
+### Create a GCP Project (Optional)
 You may use the default project, an existing project, or create a new one as described
  [here](https://support.google.com/cloud/answer/6251787 "Create a GCP project").
 
-### Enable Cloud resources and Cloud Shell
+### Enable Cloud resources and Cloud Shell (Optional)
 You will need to enable the following in the [Google API Console](https://console.developers.google.com/)
 * __Compute Engine API__
 * __Container Engine API__
@@ -42,45 +66,12 @@ To see valid choices for `<zone>`, run:
 $ gcloud compute zones list
 ```
 
-### Get the Source Code
-
-```
-$ git clone https://github.com/ibm-datapower/datapower-tutorials.git
-$ cd datapower-tutorials/using-datapower-in-kubernetes/
-```
-
-## Tools we will use
-* Docker
-    * We use Docker to package, distribute and run 
-    * https://www.docker.com
-
-* IBM DataPower Geteway for Docker
-    * Available as a Docker image in DockerHub
-    * https://hub.docker.com/r/ibmcom/datapower/
-    * https://developer.ibm.com/datapower/
-
-* Kubernetes
-    * Handle the heavy lifting of orchestrating our application
-    * http://kubernetes.io
-
-* Google Container Engine (GKE)
-    * A hosted Kubernetes service
-    * https://cloud.google.com/container-engine
-
-* Google Cloud Shell
-    * A shell environment for managing Google Cloud Platform resources
-    * https://cloud.google.com/shell/docs/
-
-
-
-##  Introduction to Kubernetes
-
-### Setting Up a Kubernetes cluster with GKE
+### Setting Up a Kubernetes cluster with GKE (Optional)
 
 GKE provides a hosted Kubernetes service that can be customized. We will leverage Kubernetes to handle the complexity 
 associated with orchestrating application containers.
 
-To provision a GKE cluser, open up your project in Google Cloud Platform and start an instance of the Google Cloud Shell.
+To provision a GKE cluster, open up your project in Google Cloud Platform and start an instance of the Google Cloud Shell.
 Next, run the following command to create a GKE cluster of 3 nodes for use in this tutorial:
 
 ```
@@ -95,8 +86,23 @@ This might take a couple of minutes.
 
 With our cluster up and running, we are now ready to run containers. 
 
+### Get the Source Code
 
-### Introduction to Pods
+```
+$ git clone https://github.com/ibm-datapower/datapower-tutorials.git
+$ cd datapower-tutorials/using-datapower-in-kubernetes/
+```
+
+
+
+
+
+##  Introduction to Kubernetes
+
+
+
+
+###  Pods
 
 In Kubernetes, all containers run in what's called a pod. A pod represents a logical application composed of co-located 
 and co-scheduled containers, shared storage, and certain shared namespaces. Pods, not containers, are the smallest deployable artifact in Kubernetes.
@@ -286,9 +292,9 @@ To create the deployments we head over to the `kubernetes/deployments` directory
 
 Before we continue, let's stop and reflect for a minute on what we have accomplished so far. At this time, we have deployed an applicaiton
  that can recover from a failure in one of our nodes in our Kubernetes cluster. We can deploy this applicaiton in a highly reproducible way.
- Additionally, the application's configuration is managed independently of the applicaiton and can be changed easily without having to rebuild our applicaiton.
+ Additionally, the application's configuration is managed independently of the application and can be changed easily without having to rebuild our applicaiton.
 
-Now, we want to expose the applicaiton service so that we can access it from the public internet. 
+Now, we want to expose the application service so that we can access it from the public internet. 
 We can expose the datapower multi-protocol gateway service running on port 80 that was configured using our  `datapower-config` ConfigMap by 
 heading over to the `kubernetes/services` directory and running:
 
