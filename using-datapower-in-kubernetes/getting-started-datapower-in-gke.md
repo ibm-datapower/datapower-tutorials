@@ -26,7 +26,7 @@ You will need to enable the following in the [Google API Console](https://consol
 
 ![Google API Console](media/gcp_api_manager.png)And familiarize yourself with the Google Cloud Shell which we will use to manage our
 Google Cloud Platform resources. You can find a getting started for the Google Cloud Shell 
-[here](https://cloud.google.com/shell/docs/quickstarta "Google Cloud Shell Getting Started").
+[here](https://cloud.google.com/shell/docs/quickstart "Google Cloud Shell Getting Started").
 Once ready, head over to your project page in the Google Cloud Platform web console and
 start a Google Cloud Shell session.
 
