@@ -160,6 +160,9 @@ And log in to datapower using the default user "admin" and "admin" password.
 
 Once you are done you can delete the deployment as we will not make further use of it in this tutorial.
 
+We delete the deployment by issuing:
+`$ kubectl delete deployment <deployment_name>`
+
 ## Deploying  a Composed Application in Kubernetes
 
 Now that we've gotten a small taste of Kubernetes, we can begin to deploy a simple composed applicaiton.
