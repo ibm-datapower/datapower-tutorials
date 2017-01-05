@@ -301,7 +301,7 @@ This will create a Kubernetes *Service* that we can use to get the external IP a
 ```
 $ kubectl get service datapower
 NAME        CLUSTER-IP    EXTERNAL-IP       PORT(S)           AGE
-datapower   10.7.246.47   104.196.131.123   9090/TCP,80/TCP   12h
+datapower   10.7.246.47   104.196.131.123   80/TCP            12h
 ```
 
 Which might take a minute or two to populate the external IP.
