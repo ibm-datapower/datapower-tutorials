@@ -146,7 +146,7 @@ do
   sleep 5
 done
 ```
-The script curls a SoapUI project named grow-soapui-project.xml, located in the /usr/local/bin/ directory, to `src_soapui_1`. The script is set to send a request message every five seconds until a successful transaction is completed. Note that the console log may show a few request failures as the application comes up.
+The script curls a SoapUI project named `grow-soapui-project.xml`, located in the /usr/local/bin/ directory, to `src_soapui_1`. The script is set to send a request message every five seconds until a successful transaction is completed. Note that the console log may show a few request failures as the application comes up.
 
 `src_soapui_1` accepts the curl request and processes the test defined in the SoapUI project suite. This is where `bob` is created as an XML message and sent to `src_datapower_1`.
 
@@ -160,7 +160,7 @@ The power to make changes in this sample is up to you. The construction of the e
 ##Cleaning Up
 When you have completed your testing, you can remove the containers created during the exercise with the following command:
 ```
-docker-compose -p bob rm
+docker-compose rm
 ```
 You can rerun the environment by issuing the docker-compose run command again.
 
