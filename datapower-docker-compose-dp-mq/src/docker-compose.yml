@@ -2,6 +2,7 @@ version: '2'
 services:
     mq:
       build: mq
+      ipc: host
     http:
       build: http
     datapower:
