@@ -1,17 +1,15 @@
-## A Composed Sample Application with DataPower and MQ 
-This sample demonstrates how to utilize multiple containers, orchestrated by Docker Compose, to create an environment that includes DataPower receiving and processing a request and writing the resulting message to an MQ back end. The composed application includes everything you need -- the load driver, the DataPower, and the MQ back-end. Everything is there from config, to stylesheets, to docker-compose.yml. In this sample, I'll outline the travels of the request message, `bob`, through the docker-composed application.
-
-This is a highly customizable example and it is encouraged that you play around with it.
+## A Composed Sample Application with DataPower and MQ
+This sample demonstrates how to use multiple containers, all orchestrated by Docker Compose, to create an application that includes DataPower, MQ, and Apache with integrated testing using SoapUI and curl. This sample includes everything you need -- the load driver, the DataPower, and the MQ back-end. Everything is there -- config, stylesheets, `docker-compose.yml` and `Dockerfiles`. This is a highly customizable example and it is encouraged that you play around with it. Read on and I'll show you how the application is composed!
 
 ## Prerequisites
 Before you attempt this tutorial, please be sure that you:
 
 - Read, and better yet attempt, the [Docker Compose Hello World Application](https://github.com/ibm-datapower/datapower-tutorials/blob/master/datapower-docker-compose-hello-world/datapower-docker-compose-hello-world.md) sample. This is a great starting point that offers some of the detailed framework of how DataPower containers can be created and used in a continuous integration system.
-- For your convenience, I created and used a Docker MQ base image. If you wish to run this step manually, please follow the instrucitons on [ibmcom/mq](https://hub.docker.com/r/ibmcom/mq/) on Docker Hub to create your own base Docker MQ image.
+- For your convenience, I created and used a Docker MQ base image. If you wish to run this step manually, please follow the instructions on [ibmcom/mq](https://hub.docker.com/r/ibmcom/mq/) on Docker Hub to create your own base Docker MQ image.
 
 
 ## The Composed Application
-No rock band here, just the message Bob. Harley's Hello World example (mentioned in the Prerequisite section) goes into great detail about the various elements of his project. In order to avoid redundancy, I will not go into such detail here, but I will still cover the whole project. Let's take a look at the `docker-compose.yml` file that orchestrates the entire environment.
+No rock band here, just a simple message. Harley's Hello World example (mentioned in the Prerequisite section) goes into great detail about the various elements of his project. In order to avoid redundancy, I will not go into such detail here, but I will still cover the whole project. Let's take a look at the `docker-compose.yml` file that orchestrates the entire application.
 ```
 version: '2'
 services:
@@ -34,9 +32,9 @@ services:
        - soapui
 ```
 
-In all, the application consists of five services, which build five images, and run five containers. 
+In all, the application consists of five services, which build five images, and run five containers.
 
-- The `curldriver` service connects to `soapui` which drives the transaction. All curldriver does is send simple curl requests.
+- The `curldriver` service connects to `soapui` which drives the transaction. All `curldriver` does is send simple curl requests.
 - The `soapui` service uses an off-the-shelf SoapUI image from Docker Hub and adds configuration required to test the DataPower MQ service. The SoapUI request is triggered by `curldriver`, and it connects to DataPower.
 - The `datapower` service uses a DataPower Gateway from ibmcom/datapower. Configurations are added, including an application domain that contains a multi-protocol gateway. The service processes requests from `soapui`, using stylesheets from `http`, and sends the request to `mq`
 - The `http` service uses an apache server image from Docker Hub. Stylesheets and schema are placed on the server, which are called by `datapower`.
@@ -44,7 +42,7 @@ In all, the application consists of five services, which build five images, and 
 
 The general flow is an HTTP request is sent via curl to a SoapUI container, which sends a test request to DataPower. The request is transformed by a processing policy in DataPower, which uses style sheets and schema from a web server. Finally, the resulting message is sent from DataPower to a back end MQ queue manager. MQ sends a response back to Datapower who fowards the message back to the requester, SoapUI. An assertion on the response is evaluated by SoapUI and a message is returned to the composed application's log with the outcome of the test.
 
-From the `docker-compose.yml` file, you can see that the services have dependencies on one another. As in the Hello World docker compose example, the networking in the self-contained environment is configured and controlled by Docker. All of the containers are aware of each other in the network and the different nodes can be referred by one another as they are named by the `docker-compose.yml`.
+From the `docker-compose.yml` file, you can see that the services have dependencies on one another. As in the Hello World Docker Compose example, networking for the application is completely controlled by Docker Compose. Compose gives each copy of the application its own network. All of the containers are aware of each other in the network and the different nodes can be referred by one another as they are named by the `docker-compose.yml`.
 
 ## Run the Application
 In order to run the application, you need to get the source. Run the following commands (note: if you have completed the docker-compose hello world sample, you need only run the second command from the datapower-tutorials directory):
@@ -69,7 +67,7 @@ src_http            latest              e55379457250        16 minutes ago      
 ```
 Note that src_ is appended to each image name. This comes from the src context directory name. Also, the `src_soapui` image is not created at docker-compose build-time, as it is an image from Docker Hub, and will be pulled during the docker-compose up command.
 
-Next, we will run our composed application, which will then process the request. 
+Next, we will run our composed application, which will then process the request.
 ```
 docker-compose up
 ```
@@ -107,12 +105,12 @@ src_curldriver_1 exited with code 0
 ```
 `src_soapui_1` has assertions set up to validate the message being returned. When the assertions are met, a `200 - OK` message is returned to `curldriver_1` as can be seen in the output above.
 
-Depending on the system on which you are deploying, the first message or two may fail to be processed as the environment may still be building. This is easily detectable in the console logs.
+Depending on the system on which you are deploying, the first message or two may fail to be processed as the application may still be building. This is easily detectable in the console logs.
 
 After the first successful response is received the curldriver script exits. You may end the test with the docker command ctrl+c, which will exit the application and stop the containers. To rerun the test, run the `docker-compose up` command again.
 
-## Request Flow- Meet "bob"
-Here I'll outline the travels of the request message, `bob`, through the message flow created in the docker-compose environment. 
+## The Request Flow
+Here I'll outline the travels of the request message created in the docker-compose application.
 
 First from the Dockerfile, the `src_curldiriver` image is configured to run the following shell script which sends a curl command via HTTP to `src_soapui`.
 ```
@@ -146,23 +144,26 @@ do
   sleep 5
 done
 ```
-The script curls a SoapUI project named `grow-soapui-project.xml`, located in the /usr/local/bin/ directory, to `src_soapui_1`. The script is set to send a request message every five seconds until a successful transaction is completed. Note that the console log may show a few request failures as the application comes up.
 
-`src_soapui_1` accepts the curl request and processes the test defined in the SoapUI project suite. This is where `bob` is created as an XML message and sent to `src_datapower_1`.
+SoapUI is acting as a proxy. It takes a http request form curl that contains the soapui project and uses the soapui project to construct the request or requests that it then sends to DataPower. We don't need to change anything in SoapUI! The project file is passed in via curl, so the off-the-shelf soapui DockerHub image is all we need.
 
-`src_datapower_1` accepts `bob` from `src_soapui_1`. The processing policy configured in the multi-protocol gateway, in the application domain, retrieves various stylesheets and schema from `src_http_1` and transforms `bob`. The policy itself is simple. As `bob` passes through each rule in the policy, his number of nodes and elements increase. At the end, `bob` is a message that reports what size he was in bytes at the end of the trip through DataPower. Bob is then routed to the `src_mq_1` back end.
+The script is set to send a request message every five seconds until a successful transaction is completed. Note that the console log may show a few request failures as the application comes up.
 
-`bob` is placed on a queue in `src_mq_1` and his travel could very well end here; however, to avoid the queue getting full on a long running test, I set up a dummy service on `src_datapower_1` that clears the queue and throws the message away. 
+`src_datapower_1` receives messages from `src_soapui_1` in the `growTest` application domain. The processing policy retrieves various stylesheets and schema from `src_http_1` and transforms the message. The policy itself is simple: As soapui's messages pass through each rule in the policy, the number of nodes and elements increase. At the end, the transformed message reports its size. DataPower then routes the transformed message to the `src_mq_1 back end`.
 
-## Making Changes- You have the power
-The power to make changes in this sample is up to you. The construction of the environment lends itself to customization. The processing policy in the DataPower configuration can be replaced; the SoapUI project can be changed with a different test or additional requests could be added; the curl driver parameters can be adjusted to change the rate and duration of test messages; multiple MQ queue managers can be added. The list is endless and completely up to you.
+After the transformed message is placed on a queue in s`rc_mq_1` that could have been the end of the story. However, to avoid the queue getting full on a long running test, I set up a dummy service on `src_datapower_1` that clears the queue and throws the message away.
 
 ##Cleaning Up
 When you have completed your testing, you can remove the containers created during the exercise with the following command:
 ```
 docker-compose rm
 ```
-You can rerun the environment by issuing the docker-compose run command again.
+You can rerun the application by issuing the docker-compose run command again.
+
+## Making Changes- You have the power
+The power to make changes in this sample is in your hands. The construction of the application lends itself to customization. The processing policy in the DataPower configuration can be replaced; the SoapUI project can be changed with a different test or additional requests could be added; the curl driver parameters can be adjusted to change the rate and duration of test messages; multiple MQ queue managers can be added. The list is endless and completely up to you.
 
 ## Conclusion
-So now that `bob's` journey has ended, you can see how an entire docker-composed application can be easily assembled and run. Docker Compose takes care of the assembly of the application and all of the networking within. Customization of the application can easily be implemented to meet your needs. I hope this sample is helpful. Thanks for participating and please provide feedback.
+I was able to use off-the-shelf Docker images and tools to create a portable containerized application in a very short period of time. I can run it wherever I can run Docker Compose. All the configuration I require is in version control. I can generate relatively complicated requests using SoapUI and I can use DataPower, MQ, and potentially other IBM Middleware as first-class citizens in my containerized applications. And if I can do it, you can too!
+
+I hope you find this sample helpful. I appreciate your time and attention and look forward to your feedback!
