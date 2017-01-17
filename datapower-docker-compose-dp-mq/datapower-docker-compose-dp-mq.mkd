@@ -145,23 +145,23 @@ do
 done
 ```
 
-SoapUI is acting as a proxy. It takes a http request form curl that contains the soapui project and uses the soapui project to construct the request or requests that it then sends to DataPower. We don't need to change anything in SoapUI! The project file is passed in via curl, so the off-the-shelf soapui DockerHub image is all we need.
+SoapUI is acting as a proxy. It takes a http request form curl that contains the soapui project and uses the project to construct the request or requests that it then sends to DataPower. We don't need to change anything in SoapUI! The project file is passed in via curl, so the off-the-shelf soapui DockerHub image is all we need.
 
 The script is set to send a request message every five seconds until a successful transaction is completed. Note that the console log may show a few request failures as the application comes up.
 
 `src_datapower_1` receives messages from `src_soapui_1` in the `growTest` application domain. The processing policy retrieves various stylesheets and schema from `src_http_1` and transforms the message. The policy itself is simple: As soapui's messages pass through each rule in the policy, the number of nodes and elements increase. At the end, the transformed message reports its size. DataPower then routes the transformed message to the `src_mq_1 back end`.
 
-After the transformed message is placed on a queue in s`rc_mq_1` that could have been the end of the story. However, to avoid the queue getting full on a long running test, I set up a dummy service on `src_datapower_1` that clears the queue and throws the message away.
+After the transformed message is placed on a queue in s`rc_mq_1` that could be the end of the story. However, to avoid the queue getting full on a long running test, I set up a dummy service on `src_datapower_1` that clears the queue and throws the message away.
 
 ##Cleaning Up
 When you have completed your testing, you can remove the containers created during the exercise with the following command:
 ```
 docker-compose rm
 ```
-You can rerun the application by issuing the docker-compose run command again.
+You can rerun the application by issuing the docker-compose up command again.
 
 ## Making Changes- You have the power
-The power to make changes in this sample is in your hands. The construction of the application lends itself to customization. The processing policy in the DataPower configuration can be replaced; the SoapUI project can be changed with a different test or additional requests could be added; the curl driver parameters can be adjusted to change the rate and duration of test messages; multiple MQ queue managers can be added. The list is endless and completely up to you.
+The power to make changes in this sample is in your hands. The construction of the application lends itself to customization. The processing policy in the DataPower configuration can be replaced with your own; the SoapUI project can be changed to run a different test or additional requests could be added; the curl driver parameters can be adjusted to change the rate and duration of test messages; multiple MQ queue managers can be added. The list is endless and completely up to you.
 
 ## Conclusion
 I was able to use off-the-shelf Docker images and tools to create a portable containerized application in a very short period of time. I can run it wherever I can run Docker Compose. All the configuration I require is in version control. I can generate relatively complicated requests using SoapUI and I can use DataPower, MQ, and potentially other IBM Middleware as first-class citizens in my containerized applications. And if I can do it, you can too!
