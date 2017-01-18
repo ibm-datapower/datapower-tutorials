@@ -9,7 +9,11 @@ Before you attempt this tutorial, please be sure that you:
 
 
 ## The Composed Application
-No rock band here, just a simple message. Harley's Hello World example (mentioned in the Prerequisite section) goes into great detail about the various elements of his project. In order to avoid redundancy, I will not go into such detail here, but I will still cover the whole project. Let's take a look at the `docker-compose.yml` file that orchestrates the entire application.
+No rock band here, just a simple message. Harley's Hello World example (mentioned in the Prerequisite section) goes into great detail about the various elements of his project. In order to avoid redundancy, I will not go into such detail here, but I will still cover the whole project. 
+
+First, let me set the stage. I have an existing DataPower deployment and I want to begin to adopt continuous integration and continuous delivery. I plan to deploy containers in my development and test environments, while final regression and deployment environments are physical appliances. In production, I store stylesheets and schema used by processing policies on a HTTP server. Since I want to be able to export from my container and import into prod, it is most straightforward to also load these files from a HTTP server in dev and test. Fortunately, with Compose this is easy! In a truly dockerized application, it would be more common to store the files natively on DataPower in the local: directory and eliminate the HTTP container altogether. 
+
+Let's take a look at the `docker-compose.yml` file that orchestrates the entire application.
 ```
 version: '2'
 services:
@@ -161,7 +165,8 @@ docker-compose rm
 You can rerun the application by issuing the docker-compose up command again.
 
 ## Making Changes- You have the power
-The power to make changes in this sample is in your hands. The construction of the application lends itself to customization. The processing policy in the DataPower configuration can be replaced with your own; the SoapUI project can be changed to run a different test or additional requests could be added; the curl driver parameters can be adjusted to change the rate and duration of test messages; multiple MQ queue managers can be added. The list is endless and completely up to you.
+The power to make changes in this sample is in your hands. The construction of the application lends itself to customization. Let us say you want to use Docker containers for your distributed application's entire life cycle (dev, test, prod). In a truly dockerized application, it would be more common to store the files natively on DataPower in the local: directory and eliminate the HTTP container altogether. Additionally, the processing policy in the DataPower configuration can be replaced with your own; the SoapUI project can be changed to run a different test or additional requests could be added; the curl driver parameters can be adjusted to change the rate and duration of test messages; multiple MQ queue managers can be added. The list is endless and completely up to you.
+
 
 ## Conclusion
 I was able to use off-the-shelf Docker images and tools to create a portable containerized application in a very short period of time. I can run it wherever I can run Docker Compose. All the configuration I require is in version control. I can generate relatively complicated requests using SoapUI and I can use DataPower, MQ, and potentially other IBM Middleware as first-class citizens in my containerized applications. And if I can do it, you can too!
