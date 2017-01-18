@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://Simple"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="simpleTestBegin">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element minOccurs="1" name="stringOne"
+					type="xsd:string">
+				</xsd:element>
+				<xsd:element minOccurs="1" name="lengthOne"
+					type="xsd:double">
+				</xsd:element>
+				<xsd:element minOccurs="1" name="stringTwo"
+					type="xsd:string">
+				</xsd:element>
+				<xsd:element minOccurs="1" name="lengthTwo"
+					type="xsd:double">
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

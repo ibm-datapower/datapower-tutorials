@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="grow" resourceRoot="" soapui-version="5.2.1" abortOnError="false" runType="SEQUENTIAL" id="eab8a3ab-f085-419b-a12a-8a8b8dbc7d11" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:testSuite name="sendRequestGrow" id="6584e747-6841-4b67-ac6c-1b25209b46d5"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="sendRequestTest1" searchProperties="true" id="2534af0e-cb64-4173-a00f-7c2d3a2008f9"><con:settings/><con:testStep type="httprequest" name="HTTP Test Request" id="c50ae7db-7bed-4aa8-94bc-4e5b3dd4566e"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" name="HTTP Test Request" postQueryString="false" mediaType="application/xml" id="ee17dcb0-cebd-4e35-8b54-7a0def369d2c" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://datapower:1707</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<p:simpleTestBegin xmlns:p="http://Simple" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://Simple foo.xsd ">
+  <stringOne>1234567890</stringOne>
+  <lengthOne>1750</lengthOne>
+  <stringTwo>1234567890</stringTwo>
+  <lengthTwo>1750</lengthTwo>
+</p:simpleTestBegin>
+]]></con:request><con:assertion type="GroovyScriptAssertion" id="746ab461-818b-41b1-a11d-df0e5217f6ba" name="Script Assertion"><con:configuration><scriptText>def http_status = messageExchange.responseHeaders["#status#"][0]
+assert http_status.contains("200")
+
+def backside_transport = messageExchange.responseHeaders["X-Backside-Transport"][0]
+assert backside_transport.contains("OK")
+
+def mqmd = messageExchange.responseHeaders["MQMD"][0]
+assert mqmd.contains("&lt;MQMD>&lt;StrucId>MD")
+</scriptText></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:loadTest name="growLoadTest1" id="0e2bf9d6-aa84-49d1-b454-3c8b2213487a"><con:settings><con:setting id="HttpSettings@close-connections">false</con:setting></con:settings><con:threadCount>2</con:threadCount><con:startDelay>0</con:startDelay><con:sampleInterval>250</con:sampleInterval><con:calculateTPSOnTimePassed>true</con:calculateTPSOnTimePassed><con:resetStatisticsOnThreadCountChange>true</con:resetStatisticsOnThreadCountChange><con:historyLimit>-1</con:historyLimit><con:testLimit>6000</con:testLimit><con:limitType>TIME</con:limitType><con:loadStrategy><con:type>Variance</con:type><con:config><interval>60000</interval><variance>0.5</variance></con:config></con:loadStrategy><con:assertion type="Step Status" name="Step Status"/><con:maxAssertionErrors>100</con:maxAssertionErrors><con:cancelExcessiveThreads>true</con:cancelExcessiveThreads><con:strategyInterval>500</con:strategyInterval></con:loadTest><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/></con:soapui-project>
