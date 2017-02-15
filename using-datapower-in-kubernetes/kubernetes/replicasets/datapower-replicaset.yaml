@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+    name: datapower
+
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            app: datapower
+    template:
+        metadata:
+            labels:
+                app: datapower
+        spec:
+            containers:
+            - name: datapower
+              image: ibmcom/datapower
+              tty: true
+              stdin: true
+              env:
+              - name: DATAPOWER_ACCEPT_LICENSE
+                value: "true"
+              - name: DATAPOWER_INTERACTIVE
+                value: "true"
