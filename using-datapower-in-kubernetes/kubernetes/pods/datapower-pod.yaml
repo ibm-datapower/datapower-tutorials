@@ -6,12 +6,14 @@ metadata:
         app: datapower
 spec:
     containers:
-        - name: datapower
-          image: ibmcom/datapower:latest
-          stdin: true
-          tty: true
-          env:
-          - name: DATAPOWER_ACCEPT_LICENSE
+      -
+        name: "datapower"
+        image: ibmcom/datapower:latest
+        stdin: true
+        tty: true
+        env:
+          -
+            name: DATAPOWER_ACCEPT_LICENSE
             value: "true"
-          - name: DATAPOWER_INTERACTIVE
+            name: DATAPOWER_INTERACTIVE
             value: "true"
