@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://Simple"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="simpleTestOut">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element minOccurs="0" name="stringOne"
+					type="xsd:string">
+				</xsd:element>
+				<xsd:element minOccurs="0" name="stringTwo"
+					type="xsd:string">
+				</xsd:element>
+				<xsd:element minOccurs="0" name="stringThree"
+					type="xsd:string">
+				</xsd:element>
+				<xsd:element minOccurs="0" name="stringFour"
+					type="xsd:string">
+				</xsd:element>
+				<xsd:element minOccurs="0" name="stringFive"
+					type="xsd:string">
+				</xsd:element>
+				<xsd:element minOccurs="0" name="numberOne"
+					type="xsd:float">
+				</xsd:element>
+				<xsd:element minOccurs="0" name="numberTwo"
+					type="xsd:float">
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

@@ -1,0 +1,7 @@
+FROM ibmcom/datapower:latest
+
+ENV DATAPOWER_ACCEPT_LICENSE=true \
+    DATAPOWER_INTERACTIVE=true \
+    DATAPOWER_WORKER_THREADS=4 
+COPY src/ /drouter/
+EXPOSE 1707
