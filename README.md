@@ -15,7 +15,7 @@ You will then perform the following:
 
 1. **Deploy DataPower gateway on OpenShift**
 2. **Deploy and configure API Connect to use the DataPower container**
-3. ** Create an API using IBM API Connect**
+3. **Create an API using IBM API Connect**
 
 
 ### Setup
@@ -27,9 +27,9 @@ The overall flow will look as follows:
 
 In this tutorial I am running an Ubuntu 16.04 VM with Docker 1.12 and OpenShift 1.5 (running as a docker image). I've also made sure that this machine has enough memory and compute resources to deploy my containers.
 
-There are a couple options available when deploying a DataPower container to achieve the ultimate goal of availability and reproducibility so that a DataPower Pod outage does not result in manual steps to re-deploy and add a new gateway to the API management server or in major loss of state. I will be using hostPath volumes (TODO: and data containers) for simplicity and demonstration but you may and should use other types as appropriate for the deployment. The volumes will store the DataPower configuration in the `config:` directory to persist the connection information to the API management server as well as other artifacts and crypto-material in the `local:` and `sharedcerts:` directories.
+There are a couple options available when deploying a DataPower container to achieve the ultimate goal of availability and reproducibility so that a DataPower Pod outage does not result in manual steps to re-deploy and add a new gateway to the API management server or in major loss of state. I will be using `hostPath` volumes (TODO: and data containers) for simplicity and demonstration but you may and should use other types as appropriate for the deployment. The volumes will store the DataPower configuration in the `config:` directory to persist the connection information to the API management server as well as other artifacts and crypto-material in the `local:` and `sharedcerts:` directories.
 
-A) Using hostPath volumes.
+#### A) Using hostPath volumes.
 
 In this scenario I am using hostPath volumes for simplicity and illustration purposes; however, you will need to relax the OpenShift security context constraints (SCC) so that Pods are allowed to use the hostPath volume plug-in without granting everyone access to the privileged SCC. To do this, first switch to the administrative user, the default command is:
 
@@ -88,7 +88,12 @@ To make sure the service is up, you can issue the following:
     datapower   172.30.61.66   <nodes>       9090:30087/TCP,5550:32643/TCP,5554:31320/TCP,8443:32612/TCP,443:30416/TCP,8000:30360/TCP,8001:32142/TCP   6m
 
 
-Notice how OpenShift will map the ports that were exposed by the Pod. For example, note how you will need to reach out to port 30087 on the OpenShift node in order to connect to the DataPower web-management port 9090. Make sure to use the mapped ports from now now when attempting to create connections from outside the cluster.
+Notice how OpenShift will map the ports that were exposed by the Pod. For example, note how in the example above you will need to reach out to port 30087 on the OpenShift node in order to connect to the DataPower web-management port 9090. Make sure to use the mapped ports from now now when attempting to create connections from outside the cluster such as when adding the DataPower gateway container to the APIC Cloud Manager.
+Also note how your firewall settings on your host may restrict certain inbound or outbound traffic so make sure you relax your firewall rules accordingly.
+
+
+
+
 
 ## References:
 
