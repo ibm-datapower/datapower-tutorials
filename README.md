@@ -9,7 +9,7 @@ Prerequisites:
 
 ### Overview
 
-In this tutorial, you will develop and publish an API with  API Connect and DataPower running on OpenShift.
+In this tutorial, you will develop and publish an API with  API Connect and DataPower running on OpenShift. This tutorial assumes prior knowledge with Docker and Kubernetes. If you do not have prior experience with Kubernetes concepts, I recommend reading the [Getting Started with DataPower in Kubernetes](https://developer.ibm.com/datapower/2017/02/27/getting-started-datapower-kubernetes/) tutorial first.
 You will then perform the following:
 
 
@@ -90,6 +90,8 @@ To make sure the service is up, you can issue the following:
 
 Notice how OpenShift will map the ports that were exposed by the Pod. For example, note how in the example above you will need to reach out to port 30087 on the OpenShift node in order to connect to the DataPower web-management port 9090. Make sure to use the mapped ports from now now when attempting to create connections from outside the cluster such as when adding the DataPower gateway container to the APIC Cloud Manager.
 Also note how your firewall settings on your host may restrict certain inbound or outbound traffic so make sure you relax your firewall rules accordingly.
+
+Now that both `datapower` Deployment and
 
 
 
