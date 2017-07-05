@@ -66,6 +66,13 @@ Once you have adapted the config file for your own environment, simply type:
     $ oc create -f kubernetes/deployments/datapower-deployment.yaml
     deployment "datapower" created
 
+To make sure the deployment was created succesfully, you can issue:
+
+    $ oc get deployment
+    NAME        DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+    datapower   1         1         1            1           46m
+
+
 This will create the datapower deployment which initializes volumes and exposes necessary ports for test and development.
 Note: non-root users cannot bind to low ports so make sure you are using ports higher than 1024 or grant capabilities to bind to lower ports.
 
@@ -74,12 +81,14 @@ Next, you will want to make sure to publish some of the ports publicly so that t
     $ oc create -f kubernetes/services/datapower-service.yaml
     service "datapower" created
 
-To make sure our service is up, you can issue the following:
+To make sure the service is up, you can issue the following:
 
     $ oc get service
     NAME        CLUSTER-IP     EXTERNAL-IP   PORT(S)                                                                                                   AGE
     datapower   172.30.61.66   <nodes>       9090:30087/TCP,5550:32643/TCP,5554:31320/TCP,8443:32612/TCP,443:30416/TCP,8000:30360/TCP,8001:32142/TCP   6m
 
+
+Notice how OpenShift will map the ports that were exposed by the Pod. For example, note how you will need to reach out to port 30087 on the OpenShift node in order to connect to the DataPower web-management port 9090. Make sure to use the mapped ports from now now when attempting to create connections from outside the cluster.
 
 ## References:
 
