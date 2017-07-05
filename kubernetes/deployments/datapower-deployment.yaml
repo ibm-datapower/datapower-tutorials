@@ -86,11 +86,11 @@ spec:
       volumes:
       - name: config-volume
         hostPath:
-          path: /home/jpmatamo/idg4l-apic-demo/datapower/config
+          path: /home/jpmatamo/datapower-apic-openshift-demo/datapower/config
       - name: local-volume
         hostPath:
-          path: /home/jpmatamo/idg4l-apic-demo/datapower/local
+          path: /home/jpmatamo/datapower-apic-openshift-demo/datapower/local
       - name: usrcerts-volume
         hostPath:
-          path: /home/jpmatamo/idg4l-apic-demo/datapower/usrcerts
+          path: /home/jpmatamo/datapower-apic-openshift-demo/datapower/usrcerts
 
