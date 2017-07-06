@@ -36,6 +36,3 @@ spec:
           name: portbase-1
           protocol: TCP
           targetPort: 8001
-
-#    externalIPs:
-#        - 9.42.102.24
