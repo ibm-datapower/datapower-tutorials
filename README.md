@@ -10,7 +10,8 @@ Prerequisites:
 ### Overview
 
 In this tutorial, you will develop and publish an API with  API Connect and DataPower running on OpenShift. This tutorial assumes prior knowledge with Docker and Kubernetes. If you do not have prior experience with Kubernetes concepts, I recommend reading the [Getting Started with DataPower in Kubernetes](https://developer.ibm.com/datapower/2017/02/27/getting-started-datapower-kubernetes/) tutorial first.
-You will then perform the following:
+
+By the end of the guide, you will perform the following:
 
 
 1. **Deploy DataPower gateway on OpenShift**
@@ -27,7 +28,7 @@ The overall flow will look as follows:
 
 In this tutorial I am running an Ubuntu 16.04 VM with Docker 1.12 and OpenShift 1.5 (running as a docker image). I've also made sure that this machine has enough memory and compute resources to deploy my containers.
 
-There are a couple options available when deploying a DataPower container to achieve the ultimate goal of availability and reproducibility so that a DataPower Pod outage does not result in manual steps to re-deploy and add a new gateway to the API management server or in major loss of state. I will be using `hostPath` volumes (TODO: and data containers) for simplicity and demonstration but you may and should use other types as appropriate for the deployment. The volumes will store the DataPower configuration in the `config:` directory to persist the connection information to the API management server as well as other artifacts and crypto-material in the `local:` and `sharedcerts:` directories.
+There are a couple options available when deploying a DataPower container to achieve the ultimate goal of availability and reproducibility so that a DataPower Pod outage does not result in manual steps to re-deploy and re-join the gateway to the API management server or in major loss of state. I will be using `hostPath` volumes (TODO: and data containers) for simplicity and demonstration but you may and should use other types as appropriate for the deployment. The volumes will store the DataPower configuration in the `config:` directory to persist the connection information to the API management server as well as other artifacts and crypto-material in the `local:` and `sharedcerts:` directories.
 
 #### A) Using hostPath volumes.
 
@@ -45,7 +46,7 @@ Note:
 a) Directories created on the underlying host using the hostPath volume plugin can only be written to by root or by modifying the file permissions on the host to be able to write to a hostPath volume.
 b) On some systems, there are also SELinux considerations to get various Volume Plug-ins to function properly such as attaching the right volume label to the directory [1]
 
-Now that you've enabled hostPath volumes, you are ready to deploy the DataPower Pod. To do this, simply change directory to the GitHub project directory change the Deployment config file so that the volume paths reflect your local workspace. For example, my config file, reflecting my home directory of `/home/jpmatamo/` is as follows:
+Now that you've enabled hostPath volumes, you are ready to deploy the DataPower Pod. To do this, simply change directory to the GitHub project directory and edit the Deployment config file so that the volume paths reflect your local workspace. For example, my Deployment config file, reflecting my home directory of `/home/jpmatamo/` is as follows:
 
     $ cat kubernetes/deployments/datapower-deployment.yaml
     ...
@@ -91,7 +92,17 @@ To make sure the service is up, you can issue the following:
 Notice how OpenShift will map the ports that were exposed by the Pod. For example, note how in the example above you will need to reach out to port 30087 on the OpenShift node in order to connect to the DataPower web-management port 9090. Make sure to use the mapped ports from now now when attempting to create connections from outside the cluster such as when adding the DataPower gateway container to the APIC Cloud Manager.
 Also note how your firewall settings on your host may restrict certain inbound or outbound traffic so make sure you relax your firewall rules accordingly.
 
-Now that both `datapower` Deployment and
+Now that both the `datapower` Deployment and Service are up, it is time to add the container to the cluster.
+
+### 2. Deploy and configure API Connect to use the DataPower container
+
+As always, head to the Services tab of the APIC Cloud Manager and add a DataPower Service. A modal window will ask you for the Address of the Datapower Service. For this guide this is the address of the single node OpenShift cluster (not the private IP assigned to the DataPower Pod!).
+Next, it will ask you for a port to set as DataPower config. As before, note that the container is running as non-root so you cannot bind to low ports, use port `8443` since this is the port that has been exposed in the Deployment and Service files included in this tutorial for that purpose but you can edit those files and redeploy to use your own values.
+Finally, select `External or no load balancer` and click `Save`
+
+
+
+
 
 
 
