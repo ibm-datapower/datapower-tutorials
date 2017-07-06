@@ -96,9 +96,13 @@ Now that both the `datapower` Deployment and Service are up, it is time to add t
 
 ### 2. Deploy and configure API Connect to use the DataPower container
 
-As always, head to the Services tab of the APIC Cloud Manager and add a DataPower Service. A modal window will ask you for the Address of the Datapower Service. For this guide this is the address of the single node OpenShift cluster (not the private IP assigned to the DataPower Pod!).
+As always, head to the Services tab of the APIC Cloud Manager and add a DataPower Service. A modal window will ask you for the `Address` of the Datapower Service. For this guide this is the address of the single node OpenShift cluster (not the private IP assigned to the DataPower Pod!).
 Next, it will ask you for a port to set as DataPower config. As before, note that the container is running as non-root so you cannot bind to low ports, use port `8443` since this is the port that has been exposed in the Deployment and Service files included in this tutorial for that purpose but you can edit those files and redeploy to use your own values.
-Finally, select `External or no load balancer` and click `Save`
+Finally, select `External or no load balancer` and click `Save`.
+Next, click on `Add Server` on the CMC and provide the public address of the DataPower service as made available by OpenShift, since I have a single node cluster and the Service ports are of type `NodePort` the address is the same as my OpenShift node address. Under the `Port` section, provide the public port that corresponds to the xml-mgmt interface, as seen in the previous section I chose to use port `5550` in DataPower which was mapped to port `32643` by OpenShift, I therefore enter port `32643` in the `Port` field.
+Finally, provide the `Username` and `Password` and enter `0.0.0.0` for the `Network Interface` and click `Create`.
+
+
 
 
 
