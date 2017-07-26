@@ -1,32 +1,48 @@
-## API Development with API Connect and OpenShift (***DRAFT***)
+## Crafting APIs with API Connect and OpenShift (***DRAFT***)
 
 
 Prerequisites:
 * Docker 1.12+
 * OpenShift 1.5+
-* DataPower Docker 7.6 Image (includes non-root support)
+* IBM DataPower Gateway for Docker v7.6.0 (available from DockerHub and FixCentral)
 * APIC OVA
 
 ### Overview
 
-In this tutorial, you will develop and publish an API with  API Connect and DataPower running on OpenShift. This tutorial assumes prior knowledge with Docker and Kubernetes. If you do not have prior experience with Kubernetes concepts, I recommend reading the [Getting Started with DataPower in Kubernetes](https://developer.ibm.com/datapower/2017/02/27/getting-started-datapower-kubernetes/) tutorial first.
+In this tutorial, you will develop and publish an API with API Connect and publish that API to a DataPower gateway running on OpenShift. This tutorial assumes prior knowledge with Docker and Kubernetes as well as APIC. If you do not have prior experience with Kubernetes concepts, I recommend reading the [Getting Started with DataPower in Kubernetes](https://developer.ibm.com/datapower/2017/02/27/getting-started-datapower-kubernetes/) tutorial first. Though this guide uses OpenShift to manage the DataPower API Gateway containers, the concepts demonstrated in this guide are meant to be general enough to be easily translated into any particular choice of container orchestrator or cloud environment.
 
 By the end of the guide, you will perform the following:
 
-
 1. **Deploy DataPower gateway on OpenShift**
-2. **Deploy and configure API Connect to use the DataPower container**
-3. **Create an API using IBM API Connect**
+2. **Deploy and configure the API Connect Management Server VM to use the DataPower Docker container**
+3. **Create and publish an API using IBM API Connect**
 
 
 ### Setup
 
-The overall flow will look as follows:
+The overall flow is as follows:
+
+
+### 0. OpenShift cluster setup
+
+In this tutorial I am running an Ubuntu 16.04 VM with Docker 17.06.0. I've followed the  OpenShift Origin 1.5 [installation guide](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md) to setup a single node cluster and made sure that the cluster has enough memory and compute resources to deploy my containers.
+
 
 
 ### 1. Deploy DataPower gateway on OpenShift
 
-In this tutorial I am running an Ubuntu 16.04 VM with Docker 1.12 and OpenShift 1.5 (running as a docker image). I've also made sure that this machine has enough memory and compute resources to deploy my containers.
+For this step, I simply want to make sure that I have a way to persist state in the event that the DataPower container goes down and a new one takes its place, for example.
+This ability is important since this is a way to avoid having to manually rejoin a gateway to the API Connect Cloud Manager any time a new DataPower gateway container is started.
+
+In order to achieve this, I will use volumes to persist the following DataPower container directories:
+
+`config:` -- This directory stores the gateway config; it includes config for any domain created by the API Connect Cloud Manager detailing the communication details between the two.
+
+`local:` -- This directory can store crypto-material and other artifacts
+
+`sharedcerts:` -- This directory holds the keys generated for accessing the `web-mgmt` as well as the keys and certs required to communicate with the API Connect Cloud Manager.
+
+\##### EOF #######
 
 There are a couple options available when deploying a DataPower container to achieve the ultimate goal of availability and reproducibility so that a DataPower Pod outage does not result in manual steps to re-deploy and re-join the gateway to the API management server or in major loss of state. I will be using `hostPath` volumes (TODO: and data containers) for simplicity and demonstration but you may and should use other types as appropriate for the deployment. The volumes will store the DataPower configuration in the `config:` directory to persist the connection information to the API management server as well as other artifacts and crypto-material in the `local:` and `sharedcerts:` directories.
 
