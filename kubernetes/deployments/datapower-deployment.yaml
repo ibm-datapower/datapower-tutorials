@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: datapower
-        image: "jpmatamo/datapower:num"
+        image: "ibmcom/datapower:7.6.0"
         stdin: true
         tty: true
         ports:
@@ -29,48 +29,6 @@ spec:
           containerPort: 8443
         - name: tls
           containerPort: 443
-        - name: dp-8000
-          containerPort: 8000
-        - name: dp-8001
-          containerPort: 8001
-        - name: dp-8002
-          containerPort: 8002
-        - name: dp-8003
-          containerPort: 8003
-        - name: dp-8004
-          containerPort: 8004
-        - name: dp-8005
-          containerPort: 8005
-        - name: dp-8006
-          containerPort: 8006
-        - name: dp-8007
-          containerPort: 8007
-        - name: dp-8008
-          containerPort: 8008
-        - name: dp-8009
-          containerPort: 8009
-        - name: dp-8010
-          containerPort: 8010
-        - name: dp-8011
-          containerPort: 8011
-        - name: dp-8012
-          containerPort: 8012
-        - name: dp-8013
-          containerPort: 8013
-        - name: dp-8014
-          containerPort: 8014
-        - name: dp-8015
-          containerPort: 8015
-        - name: dp-8016
-          containerPort: 8016
-        - name: dp-8017
-          containerPort: 8017
-        - name: dp-8018
-          containerPort: 8018
-        - name: dp-8019
-          containerPort: 8019
-        - name: dp-8020
-          containerPort: 8020
         env:
         - name: DATAPOWER_ACCEPT_LICENSE
           value: "true"
@@ -85,12 +43,8 @@ spec:
           name: usrcerts-volume
       volumes:
       - name: config-volume
-        hostPath:
-          path: /home/jpmatamo/datapower-apic-openshift-demo/datapower/config
+        emptyDir: {}
       - name: local-volume
-        hostPath:
-          path: /home/jpmatamo/datapower-apic-openshift-demo/datapower/local
+        emptyDir: {}
       - name: usrcerts-volume
-        hostPath:
-          path: /home/jpmatamo/datapower-apic-openshift-demo/datapower/usrcerts
-
+        emptyDir: {}
