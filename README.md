@@ -55,7 +55,7 @@ To make sure the deployment was created successfully, you can issue:
     NAME        DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
     datapower   1         1         1            1           46m
 
-Next, publish the ports exposed by the datapower deployment you just created so that they can be access outside the cluster. To do this, simply issue the following:
+Next, publish the ports exposed by the `datapower` deployment you just created so that they can be access outside the cluster. To do this, simply issue the following:
 
     $ oc create -f kubernetes/services/datapower-service.yaml
     service "datapower" created
