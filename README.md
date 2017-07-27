@@ -8,11 +8,11 @@ Prerequisites:
 
 ### Overview
 
-In this tutorial, you will develop and publish an API with API Connect and publish that API to a DataPower gateway running on OpenShift. This tutorial assumes prior experience with Docker and Kubernetes. If you do not have prior experience with Docker or Kubernetes concepts, I recommend reading the [Getting Started with DataPower in Kubernetes](https://developer.ibm.com/datapower/2017/02/27/getting-started-datapower-kubernetes/) tutorial first. Though this guide uses OpenShift to manage the DataPower API Gateway containers, the concepts demonstrated in this guide are meant to be general enough to be easily integrated into any particular choice of container orchestrator or cloud environment.
+In this tutorial, you will develop and publish an API with API Connect and publish that API to a DataPower gateway running on OpenShift. This tutorial assumes prior experience with Docker and Kubernetes. If you do not have prior experience with Docker or Kubernetes concepts, I recommend reading the [Getting Started with DataPower in Kubernetes](https://developer.ibm.com/datapower/2017/02/27/getting-started-datapower-kubernetes/) [1] tutorial first. Though this guide uses OpenShift to manage the DataPower API Gateway containers, the concepts demonstrated in this guide are meant to be general enough to be easily integrated into any particular choice of container orchestrator or cloud environment.
 
 By the end of the guide, you will perform the following:
 
-1. **Deploy DataPower gateway on OpenShift**
+1. **Deploy DataPower Gateway on OpenShift**
 2. **Deploy and configure the API Connect Management Server VM to use the DataPower Docker container**
 3. **Create and publish an API using IBM API Connect**
 
@@ -24,7 +24,7 @@ The overall flow is as follows:
 
 ### 0. OpenShift cluster setup
 
-In this tutorial I am running an Ubuntu 16.04 VM with Docker 17.06.0. I've followed the  OpenShift Origin 1.5 [installation guide](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md) to setup a single node cluster and made sure that the cluster has enough memory and compute resources to deploy my containers.
+In this tutorial I am running an Ubuntu 16.04 VM with Docker 17.06.0. I've followed the  OpenShift Origin 1.5 [installation guide](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md) [2] to setup a single node cluster and made sure that the cluster has enough memory and compute resources to deploy my containers.
 
 
 
@@ -66,13 +66,18 @@ To make sure the service is up, you can issue the following:
     NAME        CLUSTER-IP      EXTERNAL-IP   PORT(S)                                                                                                   AGE
     datapower   172.30.86.213   <nodes>       9090:31799/TCP,5550:30091/TCP,5554:30065/TCP,8443:30851/TCP,443:31810/TCP,8000:32128/TCP,8001:30912/TCP   24m    
 
-Notice how OpenShift will map the ports that were exposed by the Pod. For example, note how in the example above you will need to reach out to port `31799` on the OpenShift node in order to connect to the DataPower web-management port 9090 (once it's been enabled).
+Notice how OpenShift will map the ports that were exposed by the Pod. For example, note how in the example above you will need to reach out to port `31799` on the OpenShift node in order to connect to the DataPower web-management port 9090 (once it's been enabled*).
 Also note how your firewall settings on your host may restrict certain inbound or outbound traffic so make sure you relax your firewall rules accordingly.
 
 Now that both the `datapower` Deployment and Service are up, it is time to add the container to the API Connect Cloud Manager (CMC).
 
+\* The guide includes a minimal DataPower config located in the `datapower/config` project directory that enables the web-management and the xml-management DataPower objects at their default ports of 9090 and 5550, respectively. Since this guide uses `EmptyDir` volumes that are not seeded with the config, you must enable the objects some other way. To do this manually, attach to the DataPower container using `docker attach <container-id>`, login with the `admin:admin` credentials, and enable these objects in the DataPower CLI using:
+
+    idg# configure; web-mgmt; admin-state enabled; exit;
+    idg(co)# xml-mgmt; admin-state enabled; exit; write mem;
+
 ### 2. Configure API Connect Cloud Manager to use the DataPower container
-\###TODO: ADD screenshots
+
 First, deploy the API Connect OVA in the usual way. In a browser, head to `https://<ip-of-APIC-vm>/cmc` and log in, if it is your first time you can use the `admin:admin` credentials.
 
 To add the DataPower Service, head to the `Services` tab of the APIC Cloud Manager and select `Add DataPower Service` after clicking the `Add` button. A modal window will ask you for the `Address` of the Datapower Service. For this guide this is the address of the Kubernetes Service for DataPower (In my case, it is the IP of the node running Docker).
@@ -114,13 +119,13 @@ And you should get a response similar to:
 
 Congratulations! You've just developed and deployed and API with IBM API Connect using a cloud gateway.
 
-### Bonus Round: Resiliency test
+### The Cool Stuff: Resiliency test
 
 Developing and deploying and API is good and all but it doesn't showcase the reason why you've gone to the trouble of deploying the gateway as a container managed by a container orchestrator such as OpenShift.
 
 In this section, you will forcefully remove the gateway container and find that OpenShift will schedule a new container on the Pod, mount the configuration and API definitions of our previous container into the new one, and make the API available with very little down-time and with no manual steps necessary.
 
- On your docker host, find the datapower image with:
+ On your docker host, find the DataPower container with:
 
     $ docker ps
     CONTAINER ID        IMAGE                         COMMAND                  CREATED             STATUS              PORTS               NAMES
@@ -128,7 +133,7 @@ In this section, you will forcefully remove the gateway container and find that 
     efe1253921d5        openshift/origin-pod:v1.5.1   "/pod"                   22 hours ago        Up 22 hours                             k8s_POD.38dfe2cf_datapower-3531478514-gq11q_myproject_b9d9e655-7227-11e7-9c5e-000c29a97e41_4074effa
     db6a7f6c051b        openshift/origin:v1.5.1       "/usr/bin/openshif..."   47 hours ago        Up 47 hours                             origin
 
-Next, kill the datapower container with:
+Next, kill the DataPower container with:
 
     $ docker rm -f <container-id>
 
@@ -153,3 +158,8 @@ After a moment, your gateway should be fully initialized and ready to handle tra
 
 
 You have now seen how IBM API Connect can integrate with a DataPower Gateway deployed on a container orchestrator such as OpenShift. Additionally, you have experienced some of the benefits of such as setup which include enhanced reproducibility and resiliency.
+
+## References:
+[1]. https://developer.ibm.com/datapower/2017/02/27/getting-started-datapower-kubernetes/
+
+[2]. https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md
