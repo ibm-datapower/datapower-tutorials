@@ -42,7 +42,7 @@ In order to achieve this, I will use volumes to persist the following DataPower 
 
 `sharedcerts:` -- This directory holds the keys generated for accessing the `web-mgmt` as well as the keys and certs required to communicate with the API Connect Cloud Manager.
 
-The volumes in this tutorial are defined in the kubernetes Deployment file located at `kubernetes/deployments/datapower-deployment.yaml` as `EmptyDir` volumes for simplicity, you may use any Volume type that suits your needs and environment.
+The volumes in this tutorial are defined in the kubernetes Deployment file (located at `kubernetes/deployments/datapower-deployment.yaml` ) as `EmptyDir` volumes for simplicity, you may use any Volume type that suits your needs and environment.
 
 To create the Deployment, simply type the following wherever you run `oc` cluster commands:
 
