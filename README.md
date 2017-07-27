@@ -119,7 +119,7 @@ Congratulations! You've just developed and deployed and API with IBM API Connect
 
 Developing and deploying and API is good and all but it doesn't showcase the reason why you've gone to the trouble of deploying the gateway as a container managed by a container orchestrator such as OpenShift.
 
-In this section, you will forcefully remove the gateway container and find that OpenShift will schedule a new container on the Pod, mount the configuration and API definitions of our previous container into the new one, and make the API available with very little down-time.
+In this section, you will forcefully remove the gateway container and find that OpenShift will schedule a new container on the Pod, mount the configuration and API definitions of our previous container into the new one, and make the API available with very little down-time and with no manual steps necessary.
 
  On your docker host, find the datapower image with:
 
