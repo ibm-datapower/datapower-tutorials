@@ -49,7 +49,7 @@ To create the Deployment, simply type the following wherever you run `oc` cluste
     $ oc create -f kubernetes/deployments/datapower-deployment.yaml
     deployment "datapower" created
 
-To make sure the deployment was created succesfully, you can issue:
+To make sure the deployment was created successfully, you can issue:
 
     $ oc get deployment
     NAME        DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
