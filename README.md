@@ -5,7 +5,7 @@ Prerequisites:
 * Docker 1.12+
 * OpenShift 1.5+
 * IBM DataPower Gateway for Docker v7.6.0 (available from DockerHub and FixCentral)
-* APIC OVA
+* IBM API Connect OVA
 
 ### Overview
 
@@ -30,6 +30,7 @@ In this tutorial I am running an Ubuntu 16.04 VM with Docker 17.06.0. I've follo
 
 
 ### 1. Deploy DataPower gateway on OpenShift
+\###TODO: Explain how/which DP objects to enable since cannot add config to EmptyDir
 
 For this step, I simply want to make sure that I have a way to persist state in the event that the DataPower container goes down and a new one takes its place, for example.
 This ability is important since this is a way to avoid having to manually rejoin a gateway to the API Connect Cloud Manager any time a new DataPower gateway container is started.
@@ -42,53 +43,9 @@ In order to achieve this, I will use volumes to persist the following DataPower 
 
 `sharedcerts:` -- This directory holds the keys generated for accessing the `web-mgmt` as well as the keys and certs required to communicate with the API Connect Cloud Manager.
 
+The volumes in this tutorial are defined in the kubernetes Deployment file located at `kubernetes/deployments/datapower-deployment.yaml` as `EmptyDir` volumes for simplicity, you may use any Volume type that suits your needs and environment.
 
-### 2. Deploy and configure API Connect Cloud Manager to use the DataPower container
-
-Now that the DataPower container is deployed in OpenShift, I can do the one-time join of the container to the API Connect Cloud Manager (CMC). As always, head to the Services tab of the APIC Cloud Manager and add a DataPower Service. A modal window will ask you for the `Address` of the Datapower Service. For this guide this is the address of the Kubernetes Service for DataPower.
-Next, it will ask you for a port to set as DataPower config. As before, note that the container is running as non-root so you cannot bind to low ports by default, use port `8443` since this is the port that has been exposed in the Deployment and Service files included in this tutorial for that purpose. Naturally, you can edit those files and redeploy to use your own values.
-Finally, select `External or no load balancer` and click `Save`.
-Next, click on `Add Server` on the CMC and provide the public address of the DataPower service as made available by OpenShift, since I have a single node cluster and the Service ports are of type `NodePort` the address is the same as my OpenShift node address. Under the `Port` section, provide the public port that corresponds to the xml-mgmt interface, as seen in the previous section I chose to use port `5550` in DataPower which was mapped to port `32643` by OpenShift, I therefore enter port `32643` in the `Port` field.
-Finally, provide the `Username` and `Password` and enter `0.0.0.0` for the `Network Interface` and click `Create`. The use of INADDR_ANY in the `Network Interface` field is a workaround when joining a gateway behind a NAT device (such as in cloud environments / container orchestrators) since the IP address of the interface may not be the same every time the container comes up.
-
-
-\##### EOF #######
-
-There are a couple options available when deploying a DataPower container to achieve the ultimate goal of availability and reproducibility so that a DataPower Pod outage does not result in manual steps to re-deploy and re-join the gateway to the API management server or in major loss of state. I will be using `hostPath` volumes (TODO: and data containers) for simplicity and demonstration but you may and should use other types as appropriate for the deployment. The volumes will store the DataPower configuration in the `config:` directory to persist the connection information to the API management server as well as other artifacts and crypto-material in the `local:` and `sharedcerts:` directories.
-
-#### A) Using hostPath volumes.
-
-In this scenario I am using hostPath volumes for simplicity and illustration purposes; however, you will need to relax the OpenShift security context constraints (SCC) so that Pods are allowed to use the hostPath volume plug-in without granting everyone access to the privileged SCC. To do this, first switch to the administrative user, the default command is:
-
-    $  oc login -u system:admin
-
-Next, edit the **restricted** SCC:
-
-    $ oc edit scc restricted
-
-then change `alloHostDirVolumePlugin:` to `true` and save. Now you should be able to specify hostPath directories as volumes for your containers.
-
-Note:
-a) Directories created on the underlying host using the hostPath volume plugin can only be written to by root or by modifying the file permissions on the host to be able to write to a hostPath volume.
-b) On some systems, there are also SELinux considerations to get various Volume Plug-ins to function properly such as attaching the right volume label to the directory [1]
-
-Now that you've enabled hostPath volumes, you are ready to deploy the DataPower Pod. To do this, simply change directory to the GitHub project directory and edit the Deployment config file so that the volume paths reflect your local workspace. For example, my Deployment config file, reflecting my home directory of `/home/jpmatamo/` is as follows:
-
-    $ cat kubernetes/deployments/datapower-deployment.yaml
-    ...
-    volumes:
-    - name: config-volume
-      hostPath:
-        path: /home/jpmatamo/datapower-apic-openshift-demo/datapower/config
-    - name: local-volume
-      hostPath:
-        path: /home/jpmatamo/datapower-apic-openshift-demo/datapower/local
-    - name: usrcerts-volume
-      hostPath:
-        path: /home/jpmatamo/datapower-apic-openshift-demo/datapower/usrcerts
-        $ oc create -f kubernetes/deployments/datapower-deployment.yaml
-
-Once you have adapted the config file for your own environment, simply type:
+To create the Deployment, simply type the following wherever you run `oc` cluster commands:
 
     $ oc create -f kubernetes/deployments/datapower-deployment.yaml
     deployment "datapower" created
@@ -99,11 +56,7 @@ To make sure the deployment was created succesfully, you can issue:
     NAME        DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
     datapower   1         1         1            1           46m
 
-
-This will create the datapower deployment which initializes volumes and exposes necessary ports for test and development.
-Note: non-root users cannot bind to low ports so make sure you are using ports higher than 1024 or grant capabilities to bind to lower ports.
-
-Next, you will want to make sure to publish some of the ports publicly so that they can be accessed outside of the cluster. To do this, simply create the service as follows:
+Next, publish the ports exposed by the datapower deployment you just created so that they can be access outside the cluster. To do this, simply issue the following:
 
     $ oc create -f kubernetes/services/datapower-service.yaml
     service "datapower" created
@@ -111,14 +64,60 @@ Next, you will want to make sure to publish some of the ports publicly so that t
 To make sure the service is up, you can issue the following:
 
     $ oc get service
-    NAME        CLUSTER-IP     EXTERNAL-IP   PORT(S)                                                                                                   AGE
-    datapower   172.30.61.66   <nodes>       9090:30087/TCP,5550:32643/TCP,5554:31320/TCP,8443:32612/TCP,443:30416/TCP,8000:30360/TCP,8001:32142/TCP   6m
+    NAME        CLUSTER-IP      EXTERNAL-IP   PORT(S)                                                                                                   AGE
+    datapower   172.30.86.213   <nodes>       9090:31799/TCP,5550:30091/TCP,5554:30065/TCP,8443:30851/TCP,443:31810/TCP,8000:32128/TCP,8001:30912/TCP   24m    
 
-
-Notice how OpenShift will map the ports that were exposed by the Pod. For example, note how in the example above you will need to reach out to port 30087 on the OpenShift node in order to connect to the DataPower web-management port 9090. Make sure to use the mapped ports from now now when attempting to create connections from outside the cluster such as when adding the DataPower gateway container to the APIC Cloud Manager.
+Notice how OpenShift will map the ports that were exposed by the Pod. For example, note how in the example above you will need to reach out to port `31799` on the OpenShift node in order to connect to the DataPower web-management port 9090 (once it's been enabled).
 Also note how your firewall settings on your host may restrict certain inbound or outbound traffic so make sure you relax your firewall rules accordingly.
 
-Now that both the `datapower` Deployment and Service are up, it is time to add the container to the cluster.
+Now that both the `datapower` Deployment and Service are up, it is time to add the container to the API Connect Cloud Manager (CMC).
+
+### 2. Configure API Connect Cloud Manager to use the DataPower container
+\###TODO: ADD screenshots
+First, deploy the API Connect OVA in the usual way. In a browser, head to `https://<ip-of-APIC-vm>/cmc` and log in, if it is your first time you can use the `admin:admin` credentials.
+
+To add the DataPower Service, head to the `Services` tab of the APIC Cloud Manager and select `Add DataPower Service` after clicking the `Add` button. A modal window will ask you for the `Address` of the Datapower Service. For this guide this is the address of the Kubernetes Service for DataPower (In my case, it is the IP of the node running Docker).
+
+Next, it will ask you for a port to set as DataPower config. As before, note that the container is running as non-root so you cannot bind to low ports by default, use port `8443` since this is the port that has been exposed in the Deployment and Service files included in this tutorial for that purpose. Naturally, you can edit those files and redeploy to use your own values.
+Finally, select `External or no load balancer` and click `Save`.
+
+Now that the Service has been added, it is time to add a server.
+First, click on `Add Server` on the CMC under the DataPower Service you just created. A new modal window with a form will appear. Provide the public address of the DataPower service as made available by OpenShift; since I have a single node cluster and the Service ports are of type `NodePort`, the address is the same as my OpenShift node address. Under the `Port` section, provide the public port that corresponds to the xml-mgmt interface, as seen in the previous section I chose to use port `5550` in DataPower which was mapped to port `30091` by OpenShift, I therefore enter port `30091` in the `Port` field.
+Finally, provide the `Username` and `Password` and enter `0.0.0.0` for the `Network Interface` and click `Create`.
+
+The use of INADDR_ANY (0.0.0.0) in the `Network Interface` field is a workaround when joining a gateway behind a NAT device (such as in cloud environments / container orchestrators) since the IP address of the interface may not be the same every time the container comes up.
+
+You will also need to make sure there exists an `Organization` to manage developers of an API. To do this, simply head to the `Organizations` tab of the CMC and add an Organization with users if one does not exist.
+
+### 3. Create and publish an API using IBM API Connect
+
+Now you are ready to create and publish APIs. In a browser, head to `https://<ip-of-APIC-vm>/apim` and log in.
+
+Once logged in, head to the `Products` tab and add a product. I will name mine `demo-product`.
+
+Next, head click on the hamburger button on the top left and click on `Drafts` and then click on the `APIs` tab. Create a `New API`; I named mine `demo-api`.
+
+Click on `Paths` which is located on the menu on the left, then click on the `+` sign which will create a GET operation by default.
+
+Optionally, you can head to the `Security` section also located on the menu on the left and delete the default security requirement for demonstration purposes.
+
+Now, click on `Assemble` at the top and select the green `invoke` object. A menu should appear to the right. In the URL section, replace `$(target-url)$(request.path)` with, for example, `http://httpbin.org/get` and click the `Save` icon located in the top right corner.
+
+To publish the API, click on the `play` icon located above the `invoke` object, this will open a menu to the left of the screen. Select the product you created from the dropdown, click the `Add API` button, and click `Next`.
+
+If you deleted the Security requirement in a previous step, you can try out your api in the browser by heading to:
+
+`https://<dp-docker-ip>:<mapped-8443-port>/demo-org/sb/demo-api/path-1`
+
+And you should get a response similar to:
+
+    {"args":{},"headers":{"Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Accept-Language":"en-US,en;q=0.5","Cache-Control":"max-stale=0","Connection":"close","Host":"httpbin.org","If-Modified-Since":"Thu, 27 Jul 2017 14:23:41 GMT","Upgrade-Insecure-Requests":"1","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0) Gecko/20100101 Firefox/52.0","X-Bluecoat-Via":"9c4a8c2845b5df31","X-Client-Ip":"172.17.0.1","X-Global-Transaction-Id":"2278096d5979f7ae00012191"},"origin":"9.42.102.24, 129.42.208.179","url":"http://httpbin.org/get"}
+
+Congratulations! You've just developed and deployed and API with IBM API Connect using a cloud gateway.
+
+
+
+
 
 
 
