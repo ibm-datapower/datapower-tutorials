@@ -9,7 +9,7 @@ Prerequisites:
 
 ### Overview
 
-In this tutorial, you will develop and publish an API with API Connect and publish that API to a DataPower gateway running on OpenShift. This tutorial assumes prior knowledge with Docker and Kubernetes as well as APIC. If you do not have prior experience with Kubernetes concepts, I recommend reading the [Getting Started with DataPower in Kubernetes](https://developer.ibm.com/datapower/2017/02/27/getting-started-datapower-kubernetes/) tutorial first. Though this guide uses OpenShift to manage the DataPower API Gateway containers, the concepts demonstrated in this guide are meant to be general enough to be easily translated into any particular choice of container orchestrator or cloud environment.
+In this tutorial, you will develop and publish an API with API Connect and publish that API to a DataPower gateway running on OpenShift. This tutorial assumes prior experience with Docker and Kubernetes. If you do not have prior experience with Docker or Kubernetes concepts, I recommend reading the [Getting Started with DataPower in Kubernetes](https://developer.ibm.com/datapower/2017/02/27/getting-started-datapower-kubernetes/) tutorial first. Though this guide uses OpenShift to manage the DataPower API Gateway containers, the concepts demonstrated in this guide are meant to be general enough to be easily integrated into any particular choice of container orchestrator or cloud environment.
 
 By the end of the guide, you will perform the following:
 
@@ -117,9 +117,9 @@ Congratulations! You've just developed and deployed and API with IBM API Connect
 
 ### Bonus Round: Resiliency test
 
-So developing and deploying and API is good and all but it doesn't showcase the reason why you've gone to the trouble of deploying the gateway as a container managed by a container orchestrator such as OpenShift.
+Developing and deploying and API is good and all but it doesn't showcase the reason why you've gone to the trouble of deploying the gateway as a container managed by a container orchestrator such as OpenShift.
 
- In this section, you will forcefully remove the gateway container and find that OpenShift will schedule a new container on the Pod, mount the configuration and API definitions of our previous container into the new one, and make the API available with very little down-time.
+In this section, you will forcefully remove the gateway container and find that OpenShift will schedule a new container on the Pod, mount the configuration and API definitions of our previous container into the new one, and make the API available with very little down-time.
 
  On your docker host, find the datapower image with:
 
