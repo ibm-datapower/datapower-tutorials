@@ -153,13 +153,4 @@ After a moment, your gateway should be fully initialized and ready to handle tra
     {"args":{},"headers":{"Accept":"*/*","Cache-Control":"max-stale=0","Connection":"close","Host":"httpbin.org","If-Modified-Since":"Thu, 27 Jul 2017 15:16:16 GMT","User-Agent":"curl/7.35.0","X-Bluecoat-Via":"089572fb005cd253","X-Client-Ip":"172.17.0.1","X-Global-Transaction-Id":"2278096d597a03e200000c91"},"origin":"9.42.102.24, 129.42.208.182","url":
 
 
-
-
-
-
-
-
-
-## References:
-
-[1] https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/getting_started_with_kubernetes/get_started_provisioning_storage_in_kubernetes
+You have now seen how IBM API Connect can integrate with a DataPower Gateway deployed on a container orchestrator such as OpenShift. Additionally, you have experienced some of the benefits of such as setup which include enhanced reproducibility and resiliency.
