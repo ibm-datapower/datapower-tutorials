@@ -1,5 +1,4 @@
-## Crafting APIs with API Connect and OpenShift (***DRAFT***)
-
+## Crafting APIs with API Connect and OpenShift
 
 Prerequisites:
 * Docker 1.12+
