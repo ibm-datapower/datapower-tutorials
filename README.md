@@ -31,7 +31,7 @@ In this tutorial I am running an Ubuntu 16.04 VM with Docker 17.06.0. I've follo
 ### 1. Deploy DataPower gateway on OpenShift
 \###TODO: Explain how/which DP objects to enable since cannot add config to EmptyDir
 
-For this step, I simply want to make sure that I have a way to persist state in the event that the DataPower container goes down and a new one takes its place, for example.
+For this step, I simply want a reproducible way to bring up a DataPower container and to make sure that I have a way to persist state in the event that the DataPower container goes down and a new one takes its place.
 This ability is important since this is a way to avoid having to manually rejoin a gateway to the API Connect Cloud Manager any time a new DataPower gateway container is started.
 
 In order to achieve this, I will use volumes to persist the following DataPower container directories:
