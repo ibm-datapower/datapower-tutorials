@@ -115,14 +115,42 @@ And you should get a response similar to:
 
 Congratulations! You've just developed and deployed and API with IBM API Connect using a cloud gateway.
 
+### Bonus Round: Resiliency test
+
+So developing and deploying and API is good and all but it doesn't showcase the reason why you've gone to the trouble of deploying the gateway as a container managed by a container orchestrator such as OpenShift.
+
+ In this section, you will forcefully remove the gateway container and find that OpenShift will schedule a new container on the Pod, mount the configuration and API definitions of our previous container into the new one, and make the API available with very little down-time.
+
+ On your docker host, find the datapower image with:
+
+    $ docker ps
+    CONTAINER ID        IMAGE                         COMMAND                  CREATED             STATUS              PORTS               NAMES
+    2ecc5c77e8ce        ibmcom/datapower:7.6.0        "/bin/drouter"           8 minutes ago       Up 8 minutes                            k8s_datapower.c6cc4092_datapower-3531478514-gq11q_myproject_b9d9e655-7227-11e7-9c5e-000c29a97e41_4db1189a
+    efe1253921d5        openshift/origin-pod:v1.5.1   "/pod"                   22 hours ago        Up 22 hours                             k8s_POD.38dfe2cf_datapower-3531478514-gq11q_myproject_b9d9e655-7227-11e7-9c5e-000c29a97e41_4074effa
+    db6a7f6c051b        openshift/origin:v1.5.1       "/usr/bin/openshif..."   47 hours ago        Up 47 hours                             origin
+
+Next, kill the datapower container with:
+
+    $ docker rm -f <container-id>
+
+Note how OpenShift will immediately schedule a new container on the Pod, to inspect this, type:
+
+    $ oc describe pods
+
+    Events:
+      FirstSeen	LastSeen	Count	From			SubObjectPath			Type		Reason	Message
+      ---------	--------	-----	----			-------------			--------	------	-------
+      11m		11m		1	{kubelet 9.42.102.24}	spec.containers{datapower}	Normal		Created	Created container with docker id 2ecc5c77e8ce; Security:[seccomp=unconfined]
+      11m		11m		1	{kubelet 9.42.102.24}	spec.containers{datapower}	Normal		Started	Started container with docker id 2ecc5c77e8ce
+      21h		39s		3	{kubelet 9.42.102.24}	spec.containers{datapower}	Normal		Pulled	Container image "ibmcom/datapower:7.6.0" already present on machine
+      39s		39s		1	{kubelet 9.42.102.24}	spec.containers{datapower}	Normal		Created	Created container with docker id 179f8fadad9c; Security:[seccomp=unconfined]
+      39s		39s		1	{kubelet 9.42.102.24}	spec.containers{datapower}	Normal		Started	Started container with docker id 179f8fadad9c
 
 
+After a moment, your gateway should be fully initialized and ready to handle traffic again. To demonstrate this, invoke the API you created in previous steps as before:
 
-
-
-
-
-
+    $ curl -k https://9.42.102.24:30851/demo-org/sb/demo-api/path-1
+    {"args":{},"headers":{"Accept":"*/*","Cache-Control":"max-stale=0","Connection":"close","Host":"httpbin.org","If-Modified-Since":"Thu, 27 Jul 2017 15:16:16 GMT","User-Agent":"curl/7.35.0","X-Bluecoat-Via":"089572fb005cd253","X-Client-Ip":"172.17.0.1","X-Global-Transaction-Id":"2278096d597a03e200000c91"},"origin":"9.42.102.24, 129.42.208.182","url":
 
 
 
