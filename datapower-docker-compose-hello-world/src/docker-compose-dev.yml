@@ -1,0 +1,21 @@
+version: '2'
+services:
+   curldriver:
+     build: curldriver
+     depends_on:
+      - datapower
+   datapower:
+     build: datapower
+     stdin_open: true
+     tty: true
+     environment:
+      - DP_WEB_MGMT=true
+     depends_on:
+      - backend
+     volumes:
+      - ./datapower/src/drouter/config:/drouter/config
+      - ./datapower/src/drouter/local:/drouter/local
+     ports:
+      - 9090:9090
+   backend:
+     build: nodejs-hostname
