@@ -26,6 +26,11 @@ The overall flow is as follows:
 
 In this tutorial I am running an Ubuntu 16.04 VM with Docker 17.06.0. I've followed the  OpenShift Origin 1.5 [installation guide](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md) [2] to setup a single node cluster and made sure that the cluster has enough memory and compute resources to deploy my containers.
 
+Once your cluster is up, you can clone the source of the project as follows:
+
+    $ git clone https://github.com/ibm-datapower/datapower-tutorials.git
+    $ cd datapower-tutorials/datapower-apic-openshift-demo/
+
 
 
 ### 1. Deploy DataPower gateway on OpenShift
