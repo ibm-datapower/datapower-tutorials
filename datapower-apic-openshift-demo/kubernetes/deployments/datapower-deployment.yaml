@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: datapower
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: datapower
+    spec:
+      containers:
+      - name: datapower
+        image: "ibmcom/datapower:7.6.0"
+        stdin: true
+        tty: true
+        ports:
+        - name: web-mgmt
+          containerPort: 9090
+        - name: api-internal
+          containerPort: 2444
+        - name: foo-apic
+          containerPort: 2443
+        - name: xml-mgmt
+          containerPort: 5550
+        - name: ssh
+          containerPort: 2200
+        - name: api
+          containerPort: 8443
+        - name: tls
+          containerPort: 443
+        env:
+        - name: DATAPOWER_ACCEPT_LICENSE
+          value: "true"
+        - name: DATAPOWER_INTERACTIVE
+          value: "true"
+        volumeMounts:
+        - mountPath: /drouter/config/
+          name: config-volume
+        - mountPath: /drouter/local/
+          name: local-volume
+        - mountPath: /root/secure/usrcerts
+          name: usrcerts-volume
+      volumes:
+      - name: config-volume
+        emptyDir: {}
+      - name: local-volume
+        emptyDir: {}
+      - name: usrcerts-volume
+        emptyDir: {}
