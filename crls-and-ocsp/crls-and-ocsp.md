@@ -1,5 +1,5 @@
-#CRLs in DataPower
-##Introduction
+# CRLs in DataPower
+## Introduction
 
 The one way to make sure that certificates we used are to be trusted is to validate if the certificates haven't been revoked. This is done by checking a CRL (Certificate Revocation List) or utilized OCSP (Online Certificate Status Protocol). This blog  covers the support of CRL, but note that OCSP is supported by IBM DataPower Gateway as well.   Most certificates contains an extention which describe the endpoint to acquire the CRL, which is issued by the CA that signed this certificate.
 
@@ -7,8 +7,8 @@ If a CA revokes a certificate, the certificate is  is added to the CRL, and the 
 
 DataPower supports CRLs in DER or PEM format and can fetch them from an LDAP, HTTP source that might or might not be secure by SSL/TLS
 
-##CRLs On DataPower
-###Flows
+## CRLs On DataPower
+### Flows
 The following Diagrams should give you an idea what a real world flow could be.
 
 ![crl-flow](media/CRLFlow.png)
@@ -25,7 +25,7 @@ When the client notices that his key has been compromised he notifies his CA who
 
 The next time the CRL endpoint get's polled by DataPower the all validation credentials trying to validate the revoked certificate will now fail.
 
-##Hands On
+## Hands On
 
 On DataPower this is a 2 step process
 Step 1:
@@ -62,7 +62,7 @@ For the  CRL distribution points in the certificate extension there should be a 
 
 ![crl-error](media/crl-error.png)
 
-###Example materials
+### Example materials
 attached you can find zip.
 In it  2 clients (alice and bob) and a CA (password of the key is "02april1990"), the certificate of bob is revoked and in the crl.
 To test the scenario you can host the crl.crl file in the ca dir on a http server and point the CRL update policy to that endpoint. If you want enforced checking for these certificates you should host the certificates on http://192.168.100.1/crl.crl
