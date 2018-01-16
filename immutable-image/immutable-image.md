@@ -10,6 +10,12 @@ With the advent of container orchestration, immutable infrastructure is more att
 
 3) Forces a engineering team to develop a well thought out plan for rolling out updates vs ad-hoc changes to a production environment. Rollout scheme at a minimum should support canary deployments, whereby a configuration change is tested against a small subset of the total user population.
 
+These three benefits describe the foundation of a modern deployment system. They are the precursers to a pipeline. They are prerequisites to continuous integration and continuous delivery. 
+
+Immutable images are like guardrails on deployment process -- they prevent you from falling off the edge by making it more difficult to make changes outside the official process. If someone tries to make a change outside the process -- ether by mistake or with malice -- they are less likely to succeed if the image is immutable. 
+
+Using an immutable image allows you more certainty to know that what you have deployed what you have intended to deploy. This is a valuble and useful property of any deployment wheather or not you are using CI/CD. If you are thinking about CI/CD with DataPower, using immutable images can help adoption. If you are already using CI/CD with DataPower, using immutable images provides a greater level of assurance that changes can only be made inside your pipeline.
+
 ## Prerequisites
 
 Before you attempt this tutorial, please be sure that you:
