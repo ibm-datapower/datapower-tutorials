@@ -70,13 +70,19 @@ Lets start by explaining some of key aspects of the example Dockerfile:
 
 Lines 1-3 can are explained [here](https://www.ibm.com/support/knowledgecenter/en/SS9H2Y_7.6.0/com.ibm.dp.doc/virtual_fordocker.html)
 
+Line 4 enables the fast startup option. This dramatically speeds up initial process load times and reduces the amount of memory needed to start the container. The catch is slower initial access to the WebUI, SOAP management and REST management services.
+
 Lines 6 & 7 copy our source into the image. `/drouter/config` contains the configuration files and `/drouter/local` contains other non-configuration files such as scripts and other ancillary files that are referenced by config. In our case it contains the echo.js GatewayScript implementation.
 
-By default, docker COPY will recursively copy files and directories with ownership under `root`. In this case root ownership is desired because all non-root users are automatically part of the `root` user group. With this knowledge we now know we will need to focus on `group` and `other` permissions to make our images immutable. COPY also typically preserves the file permissions found on the host or build system, therefore its always a best practice to explicitly set file and directory permissions after a COPY or ADD command.
+By default, docker COPY will recursively copy files and directories with ownership under `root`. In this case root ownership is desired because all non-root users are automatically part of the `root` user group. With this knowledge we now know we will need to focus on `group` and `other` permissions to make our images immutable. COPY also typically preserves the file permissions found on the host or build system, therefore its always a best practice to explicitly set file and directory permissions after a COPY or ADD instructions.
 
-Line 9 is required because all DataPower images run as non-root and the RUN command inherits its user from the parent Dockerfile. So we are effectively switching back to the root user temporarily to make changes to the image.
+Line 9 is required because all DataPower images run as non-root and the RUN instruction inherits its user from the parent Dockerfile. So we are effectively switching back to the root user temporarily to make changes to the image.
 
 Line 10 runs a utility script to fixup permissions when switching from root to non-root.
+
+Line 11 using the USER instruction to set the user name back to its default non-root value of drouter. The USER instruction sets the user name (or UID) to use when running the image and for any RUN, CMD and ENTRYPOINT instructions that follow.
+
+Line 13 informs Docker that the container listens on TCP port 8080 at runtime. This is the port we configured the HTTP Frontside Protocol Handler to use.
 
 ## Time to make the configuration immutable
 
@@ -86,7 +92,6 @@ Open the Dockerfile using a text editor and add the following lines after `RUN s
 RUN find /drouter/local /drouter/config -type d | xargs chmod 755
 RUN find /drouter/local /drouter/config -type f | xargs chmod 644
 ```
-
 
 Combining the two lines into a single RUN command as per Dockerfile best practices, the completed Dockerfile should look like this:
 
@@ -101,7 +106,7 @@ COPY src/local /drouter/local
 
 USER root
 RUN set-user drouter \
- && find /drouter/local /drouter/config -type d | xargs chmod \
+ && find /drouter/local /drouter/config -type d | xargs chmod 755 \
  && find /drouter/local /drouter/config -type f | xargs chmod 644
 USER drouter
 
