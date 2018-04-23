@@ -1,9 +1,9 @@
 ## Using IBM DataPower Gateway v7.5 to enforce Kerberos Security  
 
-The IBM DataPower Gateway is widely used in the industry to protect backend resources from unauthorized accesses, enforcing enterprise security policies and, at the same time, offloading the backend servers from all security-related activities. 
+The IBM DataPower Gateway is widely used in the industry to protect backend resources from unauthorized accesses, enforcing enterprise security policies and, at the same time, offloading the backend servers from all security-related activities.
 The article shows how to configure IBM DataPower Gateway in order to protect a HTTP resource enforcing Kerberos security.
 In the proposed scenario, the DataPower appliance will allow a HTTP client to invoke a HTTP service only if the HTTP request will carry a valid SPNEGO token.
-To test the correct behavior of the system a SmartBear SoapUI will be used on a Client machine.
+To test the correct behaviour of the system a SmartBear SoapUI will be used on a Client machine.
 
 ![Architecture outline](media/ArchitectureOutline.png)
 
@@ -50,7 +50,7 @@ Right-click the newly created user from the list of all available users and sele
 
 In the **Account options** only four options are to be checked: the first is **Password never expires** (as set before); the others are at the bottom of the list, as shown below:
 
-![ActiveDirectory Configurarion - Account Options](media/ADAccountOptions.png)
+![ActiveDirectory Configuration - Account Options](media/ADAccountOptions.png)
 
 These settings give maximum flexibility about the encryption algorithm the account can use. This means that Kerberos ticket that will be exchanged between the client and the DataPower service (i.e. the `dp` user we have just created) can be encrypted using a wide range of algorithms, giving maximum interoperability.
 
@@ -103,12 +103,12 @@ Using the `-?` flag, the command will show an online help:
 In our scenario, we'll pass following parameters:
 
 * *out*: the name of the keytab file fo produce
-* *princ*: the principal name that we have create before, in the form `SPN@REALM` - in our case, the SPN is `HTTP/datapower.mydomain.local` and the realm is `MYDOMAIN.LOCAL` 
+* *princ*: the principal name that we have create before, in the form `SPN@REALM` - in our case, the SPN is `HTTP/datapower.mydomain.local` and the realm is `MYDOMAIN.LOCAL`
 * *mapUser*: the active directory username we associated to the SPN, i.e. `dp`
 * *mapOp*: the action to perform to set the mapping attribute, in our case is `set` (the alternative is `add`)
 * *+rndPass*: to force the command to generate a random password
 * *crypto*: the crypto system to use generating the keymap; in our case we’ll specify `All` to give maximum interoperability to the client
-* *ptype*: the type opf the principal we are going to create, in our case we’ll specify `KRB5_NT_PRINCIPAL` to intend a a general principal
+* *ptype*: the type of the principal we are going to create, in our case we’ll specify `KRB5_NT_PRINCIPAL` to intend a a general principal
 
 ```
 ktpass -out pocAllCrypto.keytab -princ HTTP/datapower.mydomain.local@MYDOMAIN.LOCAL -mapUser dp -mapOp set +rndpass -crypto All -ptype KRB5_NT_PRINCIPAL
@@ -129,13 +129,13 @@ IMPORTANT: As preliminary step, verify that the DataPower clock is in synch with
 
 Create a new Multiprotocol Gateway called `KerberosMPG` as described below:
 
-![IDG Consonle - KerberosMPG Creation](media/KerberosMPGCreation.png)
+![IDG Console - KerberosMPG Creation](media/KerberosMPGCreation.png)
 
 Set as `Default Backend URL` an available resource, e.g. http://www.ibm.com
 Set as `Request Type` and `Response Type` the `Non-XML` option, because the resource set before in an HTML page.
 Add an `HTTP Handler` preferably listening on port 80, enabling the `GET` method, and leaving all other fields at the default value:
 
-![IDG Consonle - FSH Creation](media/FSHCreation.png)
+![IDG Console - FSH Creation](media/FSHCreation.png)
 
 Create a new processing policy called `KerberosPolicy`, having two processing rule, the first with the direction Client to Server, the second from Server to Client.
 Configure the first rule, as follows:
@@ -147,42 +147,42 @@ and the second rule having:
 * a Match action matching all incoming requests (e.g. setting a rule matching all URLs)
 * a Return action
 
-![IDG Consonle - MPG Request Rule](media/MPGRequestRule.png)
+![IDG Console - MPG Request Rule](media/MPGRequestRule.png)
 
-![IDG Consonle - MPG Response Rule](media/MPGResponseRule.png)
+![IDG Console - MPG Response Rule](media/MPGResponseRule.png)
 
 The authentication policy is governed by the AAA action, let it `KerberosAAA`.
 The action is configured as follows.
 
 1. **Identification Method**: must be set to `Kerberos AP-REQ from SPNEGO token`:
 
-   ![IDG Consonle - AAA Identification](media/AAAIdentification.png)
+   ![IDG Console - AAA Identification](media/AAAIdentification.png)
 
 1. **Authentication Method**: must be set to `Validate Kerberos AP-REQ for server principal`:
 
-   ![IDG Consonle - AAA Authentication](media/AAAAuthentication.png)
+   ![IDG Console - AAA Authentication](media/AAAAuthentication.png)
 
    When you check this option, the user interface gives you the possibility to create a keytab object: click on `+` (plus) symbol to create the new keytab object; let it `pocKeytab`.
    Click the `Upload` button to upload the `pocAllCrypto.keytab` file created before.
-   To do a more deterministic test and a more easy problem determination in case of problems, leave the `Use Replay Cache` option unckeched. Conversely, for production use, is recommended to check the option for performance reason.
+   To do a more deterministic test and a more easy problem determination in case of problems, leave the `Use Replay Cache` option unchecked. Conversely, for production use, is recommended to check the option for performance reason.
 
    Click on `Apply` to confirm the creation of the new object.
 
-   ![IDG Consonle - Kerberos Keytab](media/KerberosKeytab.png)
+   ![IDG Console - Kerberos Keytab](media/KerberosKeytab.png)
 
    Let continue to configuration of the AAA action.
 
 1. **Resource Identification Method**: select `URL sent by Client` option:
 
-   ![IDG Consonle - AAA Resource Identification](media/AAAResourceIdentification.png)
+   ![IDG Console - AAA Resource Identification](media/AAAResourceIdentification.png)
 
 1. **Authorization method**: select `Allow any authenticated client`:
 
-   ![IDG Consonle - AAA Authorization](media/AAAAuthorization.png)
+   ![IDG Console - AAA Authorization](media/AAAAuthorization.png)
 
 1. **Post-processing**: leave all unchanged, and click `Commit`.
 
-   ![IDG Consonle - AAA Post Processing](media/AAAPostProcessing.png)
+   ![IDG Console - AAA Post Processing](media/AAAPostProcessing.png)
 
 Apply all the configurations and ensure that the Multiprotocol gateway is in state `Up`.
 
@@ -190,7 +190,7 @@ Apply all the configurations and ensure that the Multiprotocol gateway is in sta
 ## Using an HTTP client to test the configuration
 
 In this section we’ll use a general purpose HTTP client to test the DataPower configuration, verifying that only requests having a valid SPNEGO token (carrying a valid Kerberos ticket) are served.
-For this purpose, we used thet open source version of SoapUI client from SmartBear (https://www.soapui.org), because supports by default the creation of SPNEGO token.
+As an example, we can use the open source version of SoapUI client from SmartBear (https://www.soapui.org), because supports by default the creation of SPNEGO token.
 
 Since the client must be able to produce Kerberos/SPNEGO artifacts, it must run on a Windows Machine, logged in the Windows domain.
 
@@ -206,7 +206,7 @@ In this test, SoapUI has not been configured to respond to the challenge and the
 Let we configure SoapUI to respond to the `Negotiate` challenge.
 The configuration is quite long, but is well explained at the following link: https://www.soapui.org/soap-and-wsdl/spnego/kerberos-authentication.html
 As explained in the SoapUI documentation, we need to complete following configuration steps:
-1. modify a Windows Registry key in order to allows the SoapUI JVM to access the Ticket-Granting Tiket (TGT) session key
+1. modify a Windows Registry key in order to allows the SoapUI JVM to access the Ticket-Granting Ticket (TGT) session key
 1. create a keytab (`Administrator.keytab`) containing the user password to be used
 1. create a configuration file (`krb5.conf`) containing information about the Key Distribution Center (KDC) that will be used by SoapUI to retrieve the service ticket
 1. create a configuration file (`login.conf`) to be used by SoapUI JAAS Login Module
@@ -238,7 +238,7 @@ In the same `C:\kerberos` folder, create the `krb5.conf` file containing the fol
 	udp_preference_limit = 1
 [realms]
 	MYDOMAIN.LOCAL = {
-		kdc = winserver.mydomain.local 
+		kdc = winserver.mydomain.local
 		default_domain = MYDOMAIN.LOCAL
 }
 [domain_realms]
@@ -250,7 +250,7 @@ In the same `C:\kerberos` folder, create the `login.conf` file containing the fo
 
 ```
 com.sun.security.jgss.login {
-  com.sun.security.auth.module.Krb5LoginModule 
+  com.sun.security.auth.module.Krb5LoginModule
   required
   client=TRUE;
 };
@@ -312,13 +312,23 @@ We can see the full history using the DataPower logs.
 
 The first request generates following logs:
 
-![IDG Consonle - First Request Logs](media/IDGConsoleFirstReqLog.png)
+![IDG Console - First Request Logs](media/IDGConsoleFirstReqLog.png)
 
 Reading bottom-up (as usual), the AAA action activates but fails with the message `failed to extract ticket from Kerberos AP-REQ message`. Then `kerberos authentication failed with (kerberos, kerberos-apreq=*not-present*)`. In fact, in the first request there is no SPNEGO token in the request.
 
 The second request, conversely, produces following logs:
 
-![IDG Consonle - Second Request Logs](media/IDGConsoleSecondReqLog.png)
+![IDG Console - Second Request Logs](media/IDGConsoleSecondReqLog.png)
 
 After AAA action activation, the log says  `parse-apreq: successfully parsed Kerberos AP-REQ: client 'Administrator@MYDOMAIN.LOCAL...` and then kerberos authentication succeded.
 
+
+## Troubleshooting Tips
+
+If you have trouble, pls take a look to following links, explaining common causes:
+
+* Kerberos Token version:
+`http://www-01.ibm.com/support/docview.wss?uid=swg21502341`
+
+* FIPS Mode enabled on DataPower Gateway:
+`https://www.ibm.com/support/knowledgecenter/en/SS9H2Y_7.5.0/com.ibm.dp.doc/nist_cryptomodeoverview.html`
