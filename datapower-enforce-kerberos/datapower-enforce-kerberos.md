@@ -1,4 +1,6 @@
-## Using IBM DataPower Gateway v7.5 to enforce Kerberos Security  
+## Using IBM DataPower Gateway v7.5 to enforce Kerberos Security
+
+https://github.com/ibm-datapower/datapower-tutorials/tree/master/datapower-enforce-kerberos
 
 The IBM DataPower Gateway is widely used in the industry to protect backend resources from unauthorized accesses, enforcing enterprise security policies and, at the same time, offloading the backend servers from all security-related activities.
 The article shows how to configure IBM DataPower Gateway in order to protect a HTTP resource enforcing Kerberos security.
@@ -8,7 +10,7 @@ To test the correct behaviour of the system a SmartBear SoapUI will be used on a
 ![Architecture outline](media/ArchitectureOutline.png)
 
 
-## Domain Name Server configuration
+### Domain Name Server configuration
 
 As a preliminary step, we have to configure at least two entries in the Domain DNS, one for the Windows Server machine, the other for the DataPower Gateway.
 Using the server manager, access the DNS manager:
@@ -24,7 +26,7 @@ The same for the Windows Server machine (`winserver`), so that the DNS list will
 ![DNS Manager - Host Added](media/DNSManager-HostAdded.png)
 
 
-## Active Directory Configuration
+### Active Directory Configuration
 
 In this section are described the configuration steps to be executed on Microsoft Active Directory in order to define a new *pseudo* User ID. In the next section, the newly created user ID will be associated with a new Service Principal Name that will uniquely identify our DataPower service.
 
@@ -55,7 +57,7 @@ In the **Account options** only four options are to be checked: the first is **P
 These settings give maximum flexibility about the encryption algorithm the account can use. This means that Kerberos ticket that will be exchanged between the client and the DataPower service (i.e. the `dp` user we have just created) can be encrypted using a wide range of algorithms, giving maximum interoperability.
 
 
-## Defining the Service Principal Name (SPN) for DataPower service
+### Defining the Service Principal Name (SPN) for DataPower service
 
 This section shows how to create a new Service Principal Name (SPN) for DataPower services and how to associate them with the `dp` user created in the previous section.
 The SPN creation is made via command line (DOS prompt), using the `setspn` command.
@@ -92,7 +94,7 @@ Using again the Active Directory user interface, entering in the properties of `
 ![Active Directory Configuration - UserLogonName](media/ADUserLogonName.png)
 
 
-## Generating the Kerberos Keytab file to be imported in DataPower Gateway
+### Generating the Kerberos Keytab file to be imported in DataPower Gateway
 
 This section show how to generate the *keytab* file, i.e. the artifact to import in the DataPower AAA action, in order to decrypt, parse and validate the Kerberos ticket sent by the client.
 The keytab file is generated via command line (DOS prompt), using the `ktpass` command.
@@ -121,7 +123,7 @@ As you see, all keys will be created, one per crypto algorithm supported.
 The file `pocAllCrypto.keytab` is now created and ready to be imported in the DataPower AAA action.
 
 
-## Creating a Multiprotocol Gateway on DataPower
+### Creating a Multiprotocol Gateway on DataPower
 
 In this section, we’ll create a new Multiprotocol Gateway on DataPower in order to protect a public Internet resource. For simplicity, let that resource the public IBM home page at `http://www.ibm.com`.
 
@@ -187,7 +189,7 @@ The action is configured as follows.
 Apply all the configurations and ensure that the Multiprotocol gateway is in state `Up`.
 
 
-## Using an HTTP client to test the configuration
+### Using an HTTP client to test the configuration
 
 In this section we’ll use a general purpose HTTP client to test the DataPower configuration, verifying that only requests having a valid SPNEGO token (carrying a valid Kerberos ticket) are served.
 As an example, we can use the open source version of SoapUI client from SmartBear (https://www.soapui.org), because supports by default the creation of SPNEGO token.
@@ -323,7 +325,7 @@ The second request, conversely, produces following logs:
 After AAA action activation, the log says  `parse-apreq: successfully parsed Kerberos AP-REQ: client 'Administrator@MYDOMAIN.LOCAL...` and then kerberos authentication succeded.
 
 
-## Troubleshooting Tips
+### Troubleshooting Tips
 
 If you have trouble, pls take a look to following links, explaining common causes:
 
