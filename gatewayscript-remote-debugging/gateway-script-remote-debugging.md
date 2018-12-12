@@ -1,6 +1,6 @@
 ## GatewayScript remote debugging
 
-Prior to DataPower version 7.7.1.2 (and 2018-4-1), debugging your GatewayScript code could only be done by using DataPower's command line debugger, accessible via `debug <session-id>`.
+Prior to DataPower version 2018-4-1, debugging your GatewayScript code could only be done by using DataPower's command line debugger, accessible via `debug <session-id>`.
 
 The CLI debugger is very simple but provides a good way to get started with debugging. Unfortunately, it has numerous limitations:
 
@@ -19,7 +19,7 @@ To get started with the remote debugging support, it is necessary to configure t
 
 ### Debugging
 
-Once the remote debugger capability is enabled, you can use setup the debugging as you'd normally do for the CLI debugger. See [https://www.ibm.com/support/knowledgecenter/en/SS9H2Y_7.7.0/com.ibm.dp.doc/debugger_action_js.html] for more information.
+Once the remote debugger capability is enabled, you can use the debugger as you would normally do for the CLI debugger. See [https://www.ibm.com/support/knowledgecenter/en/SS9H2Y_7.7.0/com.ibm.dp.doc/debugger_action_js.html] for more information.
 
 To debug your GatewayScript code, add a `debugger` statement somewhere in the code you want to debug and enable the `debug` flag for the action that runs the GatewayScript code. For example:
 
@@ -31,7 +31,7 @@ exit
 
 Once debugging is turned on for the action, you can submit a client request that exercises the action. It will be paused waiting for a debugger to attach, either via CLI or remotely once it reaches the any `debugger` statements that were added. 
 
-Using Chrome DevTools as example, open `chrome://inspect`, click on `Configure...` and add the DataPower IP address and port that were configured for the remote debugging capability. If there is an active session available for debugging, it will be listed in the Remote Target where you can click to open the full featured debugger interace, where you can place further breakpoints and inspect data content.
+Using Chrome DevTools as example, open `chrome://inspect`, click on `Configure...` and add the DataPower IP address and port that were configured for the remote debugging capability. If there is an active session available for debugging, it will be listed in the Remote Target where you can click to open the full featured debugger interface, where you can place further breakpoints and inspect data content.
 
 ![debugger](media/debugger@2x.png)
 
