@@ -26,9 +26,11 @@ Now load the packet capture file using "File -> Open" to see that the TLS sessio
 
 ## Troubleshooting
 
-If packets are not decrypting properly, you can enable a debug output file under "Preferences -> Protocols -> SSL":
+If packets are not decrypting properly, you can enable the generation of a debug output file under "Preferences -> Protocols -> SSL":
 
 ![wireshark3](media/wireshark3.png)
+
+In the example above, the debug output will be placed on a file named `/tmp/ssldebug.txt`
 
 Note: only sessions that have captured the full SSL keyexchange consisting of CLIENT_HELLO and SERVER_HELLO can be properly decrypted.
 
